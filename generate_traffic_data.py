@@ -98,12 +98,6 @@ def sample_random_uniform_state():
 
 
 def gen_data(client, npoints, outdir):
-    print("-1")
-    try:
-        screen_shot = mss.mss()
-    except:
-        traceback.print_exc()
-
     screen_shot = mss.mss()
     csv_file = outdir + 'state_data.csv'
     print("0")
@@ -245,4 +239,3 @@ time.sleep(3)
 #gen_data_from_states(client, state_file, outdir)
 #np.random.seed(3)
 gen_data(client, npoints, outdir)
-print("here")

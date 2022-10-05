@@ -1,23 +1,20 @@
+# TODO: 
+
+
 from xpc3 import *
 from xpc3_helper import *
-
 from PIL import Image
-
 import numpy as np
 import time
-
 import matplotlib.pyplot as plt
-
 import mss
 import cv2
 import os
-
 import pymap3d as pm
-
 import pandas as pd
 
 def set_position(client, ac, e, n, u, psi, pitch=-998, roll=-998):
-    ref = [37.46358871459961, -122.11750030517578, 1578.909423828125]
+    ref = [37.46358871459961, -122.11750030517578, 1578.909423828125] #PARAMS
     p = pm.enu2geodetic(e, n, u, ref[0], ref[1], ref[2])
     client.sendPOSI([*p, pitch, roll, psi], ac)
 

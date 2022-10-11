@@ -9,9 +9,18 @@ import mss
 import cv2
 import pymap3d as pm
 
-def rads_to_degs(degs):
-    return degs * (np.pi / 180)
+class Aircraft:
+    def __init__(self, east, north, up, heading, pitch=-998, roll=-998):
+        self.e = east
+        self.n = north
+        self.u = up
+        self.h = heading
+        self.p = pitch
+        self.r = roll
 
+def rads_to_degs(degs):
+    """Helper to convert radians to degrees"""
+    return degs * (np.pi / 180)
 
 def set_position(client, ac, e, n, u, psi, pitch=-998, roll=-998):
     """Sets position of aircraft in XPlane
@@ -33,12 +42,34 @@ def set_position(client, ac, e, n, u, psi, pitch=-998, roll=-998):
     pitch : int (optional)
     roll : int (optional)
     """
+
     ref = REGION_OPTIONS[REGION_CHOICE]
     p = pm.enu2geodetic(e, n, u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, pitch, roll, psi], ac)
 
 
 def get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0):
+    """Generates intruder position based on ownship and relative angles
+    
+    Parameters
+    ----------
+    e0, n0, u0 : float
+        eastward, northward, and upward distance of ownship from origin location in meters 
+    h0 : float
+        heading of ownship in degrees
+    z : int
+        diagonal distance of intruder from ownship in meters
+    hang, vang : float
+        horizontal and vertical angle of intruder from ownship in degrees
+    p0, r0 : int
+        pitch and roll of ownship in degrees
+    
+    Returns
+    -------
+    e1, n1, u1 : float
+        eastward, northward, an dupward position of intruder from origin in meters
+    """
+
     e1 = z * np.tan(rads_to_degs(hang + r0))
     n1 = z
     u1 = z * np.tan(rads_to_degs(vang + p0))
@@ -57,12 +88,41 @@ def get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0):
     return e1, n1, u1
 
 def random_normal(min, max, loc, scale):
+    """Generates random value from normal distribution within a range
+    
+    Parameters
+    ----------
+    min, max : int
+        min and max of range for sample value
+    loc, scale : int
+        mean and std for normal distribution
+        
+    Returns
+    -------
+    out : float
+        sampled value from normal distribution
+    """
+
     out = np.random.normal(loc, scale)
     while out > max or out < min:
         out = np.random.normal(loc, scale)
     return out
 
 def sample_random_state():
+    """Generates ownship and intruder position values
+    
+    Returns
+    -------
+    ownship : Aircraft
+        ownship position information
+    intruder : Aircraft
+        intruder position information
+    vang, hang : float
+        horizontal and vertical angle of intruder from ownship in degrees
+    z : int
+        diagonal distance of intruder from ownship in meters
+    """
+    
     # Ownship state
     e0 = np.random.uniform(-EAST_RANGE, EAST_RANGE)  # meters
     n0 = np.random.uniform(-NORTH_RANGE, NORTH_RANGE)  # meters
@@ -70,6 +130,7 @@ def sample_random_state():
     h0 = np.random.uniform(OWNSHIP_HEADING[0], OWNSHIP_HEADING[1])  # degrees
     p0 = random_normal(PITCH_RANGE[0], PITCH_RANGE[1], 0, 30) # degrees
     r0 = random_normal(ROLL_RANGE[0], ROLL_RANGE[1], 0, 30) # degrees
+    ownship = Aircraft(e0, n0, u0, h0, p0, r0)
 
     # Info about relative position of intruder
     vang = np.random.uniform(VANG_RANGE[0], VANG_RANGE[1])  # degrees
@@ -81,10 +142,21 @@ def sample_random_state():
     # Intruder state
     e1, n1, u1 = get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0)
     h1 = np.random.uniform(INTRUDER_HEADING[0], INTRUDER_HEADING[1])  # degrees
+    intruder = Aircraft(e1, n1, u1, h1)
 
-    return e0, n0, u0, h0, p0, r0, vang, hang, z, e1, n1, u1, h1
+    return ownship, intruder, vang, hang, z
 
 def gen_data(client, outdir):
+    """Generates dataset based on parameters in settings.py
+
+    Parameters
+    ----------
+    client : SocketKind.SOCK_DGRAM
+        XPlaneConnect socket
+    outdir : str
+        path of directory to save data to
+    """
+
     screen_shot = mss.mss()
     csv_file = outdir + 'state_data.csv'
     with open(csv_file, 'w') as fd:
@@ -92,7 +164,10 @@ def gen_data(client, outdir):
 
     for i in range(NUM_SAMPLES):
         # Sample random state
-        e0, n0, u0, h0, p0, r0, vang, hang, z, e1, n1, u1, h1 = sample_random_state()
+        #e0, n0, u0, h0, p0, r0, vang, hang, z, e1, n1, u1, h1 = sample_random_state()
+        ownship, intruder, vang, hang, z = sample_random_state()
+        e0, n0, u0, h0, p0, r0 = ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r
+        e1, n1, u1, h1 = intruder.e, intruder.n, intruder.u, intruder.h
 
         # Position the aircraft
         zulu_time = TIME_OPTIONS[REGION_CHOICE] * 3600

@@ -1,4 +1,8 @@
 # TODO: move xpc3 and helper to src folder
+# TODO: aircraft object
+# TODO: intruder position
+# TODO: get refs for airports -- PA, BOS, osh kosh, tahoe -- make 0,0,0 be in the air (query for y_agl using getdref, or use getposi)
+# TODO: sliders for screen size? 
 
 '''from settings import *
 from xpc3 import *

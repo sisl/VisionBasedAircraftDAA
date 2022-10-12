@@ -1,6 +1,6 @@
 
-OUTDIR = "/Users/elysiasmyers/Desktop/STANFORD/VisionBasedAircraftDAA/datasets/"
 #OUTDIR = "C:/Users/X-Plane/Desktop/VisionBasedAircraftDAA/datasets/"
+OUTDIR = "../datasets/"
 
 REGION_CHOICE = "Palo Alto"
 

@@ -1,7 +1,8 @@
 # DONE: move xpc3 and helper to src folder
 # DONE: aircraft object
+# DONE: added utility funtion for printing location of aircraft
 # TODO: intruder position
-# TODO: get refs for airports -- PA, BOS, osh kosh, tahoe -- make 0,0,0 be in the air (query for y_agl using getdref, or use getposi)
+# DONE: get refs for airports -- PA, BOS, osh kosh, tahoe -- make 0,0,0 be in the air (query for y_agl using getdref, or use getposi)
 # TODO: sliders for screen size? 
 
 import mss
@@ -162,13 +163,36 @@ def run_data_generation():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    set_position(client, Aircraft(1, 0, 1200, 10, 90, pitch=0, roll=0))
-    set_position(client, Aircraft(0, 0, 1200, 10, 90, pitch=0, roll=0))
+    set_position(client, Aircraft(1, 0, 0, 0, 0, pitch=0, roll=0))
+    set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
 
     time.sleep(s.PAUSE_1)
 
     gen_data(client)
 
+def printOwnshipPosition(client):
+    lat = client.getDREF("sim/flightmodel/position/latitude")[0]
+    lon = client.getDREF("sim/flightmodel/position/longitude")[0]
+    elev = client.getDREF("sim/flightmodel/position/elevation")[0]
+    y_agl = client.getDREF("sim/flightmodel/position/y_agl")[0]
+    print("Lat: %.14f" % lat)
+    print("Lon: %.14f" % lon)
+    print("Elevation: %.14f" % elev)
+    print("y_agl: %.14f" % y_agl)
+    print("ref: [%.14f, %.14f, %.14f]" % (lat, lon, elev))
+
+# code to help obtain new starting positions
+def testing_locs():
+    client = XPlaneConnect()
+    client.pauseSim(True)
+    client.sendDREF("sim/operation/override/override_joystick", 1)
+
+    printOwnshipPosition(client)
+
+    print("After shifting")
+    set_position(client, Aircraft(0, 500, 500, 0, 0, pitch=0, roll=0))
+    printOwnshipPosition(client)
 
 if __name__ == "__main__":
-    run_data_generation()
+    testing_locs()
+   # run_data_generation()

@@ -3,7 +3,7 @@
 # Maintained by Sydney Katz (smkatz@stanford.edu)
 
 import numpy as np
-import data_generation.xpc3
+import xpc3
 import time
 import pandas as pd
 

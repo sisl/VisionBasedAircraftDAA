@@ -1,3 +1,6 @@
+# TODO: pull main function calls into main function
+# TODO: pull functions from jupyter notebook into new notebook here
+# ---------
 # TODO: combine gen_data and gen_data_yolo
 # TODO: pull outdir as global parameter
 # TODO: finish function header comments for file

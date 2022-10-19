@@ -1,9 +1,6 @@
-# DONE: move xpc3 and helper to src folder
-# DONE: aircraft object
-# DONE: added utility funtion for printing location of aircraft
 # TODO: intruder position
-# DONE: get refs for airports -- PA, BOS, osh kosh, tahoe -- make 0,0,0 be in the air (query for y_agl using getdref, or use getposi)
-# TODO: sliders for screen size? 
+# TODO: clean up file
+# TODO: 1920x1080 screen resolution before taking pictures
 
 import mss
 import cv2

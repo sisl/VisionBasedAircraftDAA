@@ -65,6 +65,8 @@ def get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0):
         eastward, northward, an dupward position of intruder from origin in meters
     """
 
+    # shift the intruder by z in the direction that the ownship is facing
+
     e1 = z * np.tan(np.rad2deg(hang + r0))
     n1 = z
     u1 = z * np.tan(np.rad2deg(vang + p0))
@@ -187,11 +189,16 @@ def testing_locs():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    printOwnshipPosition(client)
+    #printOwnshipPosition(client)
+    theta = client.getDREF("sim/flightmodel/position/theta")
+    #phi = client.getDREF("sim/flightmodel/position/phi")[0]
+    #psi = client.getDREF("sim/flightmodel/position/psi")[0]
+    #print("ref: [%.14f, %.14f, %.14f]" % (theta, phi, psi))
+    print(theta)
 
     print("After shifting")
     set_position(client, Aircraft(0, 500, 500, 0, 0, pitch=0, roll=0))
-    printOwnshipPosition(client)
+    #printOwnshipPosition(client)
 
 if __name__ == "__main__":
     testing_locs()

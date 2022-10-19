@@ -53,7 +53,7 @@ def get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0):
     h0 : float
         heading of ownship in degrees
     z : int
-        diagonal distance of intruder from ownship in meters
+        diagonal distance of intruder from ownship in meters (as the crow flies?)
     hang, vang : float
         horizontal and vertical angle of intruder from ownship in degrees
     p0, r0 : int
@@ -65,8 +65,12 @@ def get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0):
         eastward, northward, an dupward position of intruder from origin in meters
     """
 
-    # shift the intruder by z in the direction that the ownship is facing
+    # shift the intruder by z in the heading direction that the ownship is facing
+    e1 = z * np.cos(h0)
+    n1 = z * np.sin(h0)
 
+
+    # BELOW THIS IS WHAT WAS HERE BEFORE
     e1 = z * np.tan(np.rad2deg(hang + r0))
     n1 = z
     u1 = z * np.tan(np.rad2deg(vang + p0))
@@ -190,14 +194,15 @@ def testing_locs():
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
     #printOwnshipPosition(client)
-    theta = client.getDREF("sim/flightmodel/position/theta")
-    #phi = client.getDREF("sim/flightmodel/position/phi")[0]
-    #psi = client.getDREF("sim/flightmodel/position/psi")[0]
-    #print("ref: [%.14f, %.14f, %.14f]" % (theta, phi, psi))
-    print(theta)
+    set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
+    theta = client.getDREF("sim/flightmodel/position/theta")[0] # pitch
+    phi = client.getDREF("sim/flightmodel/position/phi")[0] # roll
+    psi = client.getDREF("sim/flightmodel/position/psi")[0] # heading
+    print("ref: [%.14f, %.14f, %.14f]" % (theta, phi, psi))
+    #print(theta)
 
-    print("After shifting")
-    set_position(client, Aircraft(0, 500, 500, 0, 0, pitch=0, roll=0))
+    #print("After shifting")
+    #set_position(client, Aircraft(0, 500, 500, 0, 0, pitch=0, roll=0))
     #printOwnshipPosition(client)
 
 if __name__ == "__main__":

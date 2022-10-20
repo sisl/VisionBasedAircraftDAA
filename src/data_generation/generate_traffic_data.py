@@ -27,7 +27,7 @@ class Aircraft:
         self.r = roll
     
     def __str__(self):
-        out = f"Craft: {self.id}, East: {self.e}, North: {self.n}, Up: {self.u}, Heading: {self.h}"
+        out = "Craft: %.2f, East: %.2f, North: %.2f, Up: %.2f, Heading: %.2f, Pitch: %.2f, Roll: %.2f" % (self.id, self.e, self.n, self.u, self.h, self.p, self.r)
         return out
 
 def set_position(client, aircraft):
@@ -48,7 +48,7 @@ def rot_matrix(axis, theta):
     theta = np.deg2rad(theta)
     if axis == 'x':
         return np.matrix([[ 1, 0           , 0           ],
-                   [ 0, np.cos(theta),np.sin(theta)],
+                   [ 0, np.cos(theta), -np.sin(theta)],
                    [ 0, np.sin(theta), np.cos(theta)]])
     elif axis == 'y':
         return np.matrix([[ np.cos(theta), 0, np.sin(theta)],
@@ -60,21 +60,23 @@ def rot_matrix(axis, theta):
                     [ 0           , 0            , 1 ]])
     return None
 
-def get_intruder(ownship, r, hang, vang):
-    inclination = np.deg2rad(vang)
-    azimuth = np.deg2rad(hang)
+def get_intruder_position(ownship, r, hang, vang):
+    inclination = np.deg2rad(90-vang)
+    azimuth = np.deg2rad(90-hang)
+
+    # Set initial cartesian coordinates
     e1 = r * np.sin(inclination) * np.cos(azimuth) + ownship.e
     n1 = r * np.sin(inclination) * np.sin(azimuth) + ownship.n
     u1 = r * np.cos(inclination) + ownship.u
 
-    # Rotate
+    # Rotate according to Tate Bryant Convention
     intruder = np.array([e1, n1, u1]).reshape(-1, 1)
-    intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
-    intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
     intruder = np.matmul(rot_matrix('z', ownship.h), intruder)
-
+    intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
+    intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
     return Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), 0)
 
+'''OLD. Delete?
 def get_intruder_position(e0, n0, u0, h0, r, hang, vang, p0, r0):
     """Generates intruder position based on ownship and relative angles
     
@@ -127,7 +129,7 @@ def get_intruder_position(e0, n0, u0, h0, r, hang, vang, p0, r0):
     n1 += n0
     u1 += u0
 
-    return e1, n1, u1
+    return e1, n1, u1'''
 
 def sample_random_state():
     """Generates ownship and intruder position values
@@ -140,8 +142,8 @@ def sample_random_state():
         intruder position information
     vang, hang : float
         horizontal and vertical angle of intruder from ownship in degrees
-    z : int
-        diagonal distance of intruder from ownship in meters
+    dist : int
+        radial distance between ownship and intruder
     """
 
     # Ownship state
@@ -151,22 +153,18 @@ def sample_random_state():
     h0 = np.random.uniform(s.OWNSHIP_HEADING[0], s.OWNSHIP_HEADING[1])  # degrees
     p0 = truncnorm.rvs(s.PITCH_RANGE[0], s.PITCH_RANGE[1], loc=0, scale=10) # degrees
     r0 = truncnorm.rvs(s.ROLL_RANGE[0], s.ROLL_RANGE[1], loc=0, scale=10) # degrees
-    ownship = Aircraft(0, e0, n0, u0, 0, 0, 0)
+    ownship = Aircraft(0, e0, n0, u0, h0, p0, r0)
 
     # Info about relative position of intruder
     vang = np.random.uniform(s.VANG_RANGE[0], s.VANG_RANGE[1])  # degrees
     hang = np.random.uniform(s.HANG_RANGE[0], s.HANG_RANGE[1])  # degrees
-    z = np.random.uniform(s.DIST_RANGE[0], s.DIST_RANGE[1])  # meters
-    # while z < 20.0:
-    #     z = np.random.gamma(2, 200)  # meters
+    dist = np.random.uniform(s.DIST_RANGE[0], s.DIST_RANGE[1])  # meters
 
     # Intruder state
-    #e1, n1, u1 = get_intruder_position(e0, n0, u0, h0, z, hang, vang, p0, r0)
-    e1, n1, u1 = get_intruder_position(e0, n0, u0, h0, 10, 0, 0, 0, 0)
+    intruder = get_intruder_position(ownship, dist, hang, vang)
     h1 = np.random.uniform(s.INTRUDER_HEADING[0], s.INTRUDER_HEADING[1])  # degrees
-    intruder = Aircraft(1, e0, n0 + 10, u0, 0)
 
-    return ownship, intruder, vang, hang, z
+    return ownship, intruder, vang, hang, dist
 
 def gen_data(client):
     """Generates dataset based on parameters in settings.py
@@ -235,23 +233,12 @@ def testing_locs():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    #printOwnshipPosition(client)
-    o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
+    o = Aircraft(0, 0, 0, 0, 14, pitch=-30, roll=30)
     print(o)
     i = Aircraft(1, 0, 10, 0, 0, pitch=0, roll=0)
-    set_position(client, o)
-    set_position(client, i)
-    time.sleep(2)
-    i = get_intruder(o, 20, 0, 0)
+    i = get_intruder_position(o, 20, -30, 30)
     print(i)
     set_position(client, i)
-
-
-    #print(theta)
-
-    #print("After shifting")
-    #set_position(client, Aircraft(0, 500, 500, 0, 0, pitch=0, roll=0))
-    #printOwnshipPosition(client)
 
 if __name__ == "__main__":
     testing_locs()

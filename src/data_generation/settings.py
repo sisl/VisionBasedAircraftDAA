@@ -15,8 +15,8 @@ UP_RANGE = 500.0
 # OWNSHIP POSITION Cont. 
 # all in (min, max) form
 OWNSHIP_HEADING = (0.0, 360.0) # degrees
-PITCH_RANGE = (-90, 90) # degrees (-90 = straight down, 90 = straight up)
-ROLL_RANGE = (-90, 90) # degrees (-90 = full roll left, 90 = full roll right)
+PITCH_RANGE = (-45, 45) # degrees (-90 = straight down, 90 = straight up)
+ROLL_RANGE = (-45,45) # degrees (-90 = full roll left, 90 = full roll right)
 
 # INTRUDER POSITION
 # all in (min, max) form

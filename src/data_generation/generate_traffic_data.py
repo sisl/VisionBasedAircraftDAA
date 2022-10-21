@@ -60,21 +60,24 @@ def rot_matrix(axis, theta):
                     [ 0           , 0            , 1 ]])
     return None
 
-def get_intruder_position(ownship, r, hang, vang):
+def get_intruder_position(ownship, r, hang, vang, h):
     inclination = np.deg2rad(90-vang)
     azimuth = np.deg2rad(90-hang)
 
     # Set initial cartesian coordinates
-    e1 = r * np.sin(inclination) * np.cos(azimuth) + ownship.e
-    n1 = r * np.sin(inclination) * np.sin(azimuth) + ownship.n
-    u1 = r * np.cos(inclination) + ownship.u
+    e1 = r * np.sin(inclination) * np.cos(azimuth)
+    n1 = r * np.sin(inclination) * np.sin(azimuth)
+    u1 = r * np.cos(inclination)
 
-    # Rotate according to Tate Bryant Convention
+    # Rotate according to Tait Bryant Convention
     intruder = np.array([e1, n1, u1]).reshape(-1, 1)
-    intruder = np.matmul(rot_matrix('z', ownship.h), intruder)
+    intruder = np.matmul(rot_matrix('z', -1*ownship.h), intruder)
     intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
     intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
-    return Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), 0)
+    intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
+    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
+
+    return intruder_obj
 
 '''OLD. Delete?
 def get_intruder_position(e0, n0, u0, h0, r, hang, vang, p0, r0):
@@ -159,10 +162,10 @@ def sample_random_state():
     vang = np.random.uniform(s.VANG_RANGE[0], s.VANG_RANGE[1])  # degrees
     hang = np.random.uniform(s.HANG_RANGE[0], s.HANG_RANGE[1])  # degrees
     dist = np.random.uniform(s.DIST_RANGE[0], s.DIST_RANGE[1])  # meters
-
+    
     # Intruder state
-    intruder = get_intruder_position(ownship, dist, hang, vang)
     h1 = np.random.uniform(s.INTRUDER_HEADING[0], s.INTRUDER_HEADING[1])  # degrees
+    intruder = get_intruder_position(ownship, dist, hang, vang, h1)
 
     return ownship, intruder, vang, hang, dist
 
@@ -193,6 +196,7 @@ def gen_data(client):
 
         # Pause and then take the screenshot
         time.sleep(s.PAUSE_2)
+        time.sleep(1)
         ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[12:-12, :, :]
 
         # Write the screenshot to a file
@@ -233,10 +237,13 @@ def testing_locs():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    o = Aircraft(0, 0, 0, 0, 14, pitch=-30, roll=30)
+    o = Aircraft(0, 0, 0, 0, 20, pitch=40, roll=45)
     print(o)
+    set_position(client, o)
     i = Aircraft(1, 0, 10, 0, 0, pitch=0, roll=0)
-    i = get_intruder_position(o, 20, -30, 30)
+    set_position(client, i)
+    #time.sleep(2)
+    i = get_intruder_position(o, 100, -10, 10, 0)
     print(i)
     set_position(client, i)
 

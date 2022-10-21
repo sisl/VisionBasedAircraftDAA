@@ -14,16 +14,16 @@ UP_RANGE = 500.0
 
 # OWNSHIP POSITION Cont. 
 # all in (min, max) form
-OWNSHIP_HEADING = (0.0, 360.0) # degrees
+OWNSHIP_HEADING = (0.0, 360) # degrees
 PITCH_RANGE = (-45, 45) # degrees (-90 = straight down, 90 = straight up)
-ROLL_RANGE = (-45,45) # degrees (-90 = full roll left, 90 = full roll right)
+ROLL_RANGE = (-45, 45) # degrees (-90 = full roll left, 90 = full roll right)
 
 # INTRUDER POSITION
 # all in (min, max) form
 INTRUDER_HEADING = (0.0, 360.0) # degrees
-VANG_RANGE = (-25.0, 25.0) # degrees, vertical angle from ownship
-HANG_RANGE = (-38.0, 38.0) # degrees, horizontal angle from ownship
-DIST_RANGE = (20, 2000) # meters, diagonal distance from ownship
+VANG_RANGE = (-15.0, 15.0) # degrees, vertical angle from ownship
+HANG_RANGE = (-25.0, 25.0) # degrees, horizontal angle from ownship
+DIST_RANGE = (20, 500) # meters, diagonal distance from ownship
 
 # TIME OF DAY
 # Start and end of range of possible time of day in local time, e.g. 8.0 = 8AM, 17.0 = 5PM

@@ -11,7 +11,6 @@
 from sys import argv
 import pandas as pd
 import numpy as np
-from sympy import arg
 
 def cosd(x):
     """Returns the cosine of an angle given in degrees"""

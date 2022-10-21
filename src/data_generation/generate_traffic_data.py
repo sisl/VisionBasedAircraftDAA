@@ -64,6 +64,20 @@ def get_intruder_position(ownship, r, hang, vang, h):
     inclination = np.deg2rad(90-vang)
     azimuth = np.deg2rad(90-hang)
 
+    # METHOD 1
+    # start with [0, r, 0]
+    # rotate about x axis by pitch + vang
+    # rotate about y axis by roll
+    # rotate about z axis by heading + hang
+    intruder = np.array([0, r, 0]).reshape(-1, 1)
+    intruder = np.matmul(rot_matrix('z', -1*(ownship.h + hang)), intruder)
+    intruder = np.matmul(rot_matrix('x', ownship.p + vang), intruder)
+    intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
+    intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
+    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
+    return intruder_obj # comment out this line to toggle between methods 1 and 2
+
+    # SECOND METHOD BELOW
     # Set initial cartesian coordinates
     e1 = r * np.sin(inclination) * np.cos(azimuth)
     n1 = r * np.sin(inclination) * np.sin(azimuth)
@@ -237,7 +251,7 @@ def testing_locs():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    o = Aircraft(0, 0, 0, 0, 20, pitch=40, roll=45)
+    o = Aircraft(0, 0, 0, 0, 30, pitch=30, roll=30)
     print(o)
     set_position(client, o)
     i = Aircraft(1, 0, 10, 0, 0, pitch=0, roll=0)

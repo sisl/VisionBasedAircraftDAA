@@ -1,4 +1,4 @@
-# TODO: intruder position
+# DONE: intruder position
 # TODO: clean up file
 # TODO: 1920x1080 screen resolution before taking pictures
 
@@ -64,89 +64,20 @@ def get_intruder_position(ownship, r, hang, vang, h):
     inclination = np.deg2rad(90-vang)
     azimuth = np.deg2rad(90-hang)
 
-    # METHOD 1
-    # start with [0, r, 0]
-    # rotate about x axis by pitch + vang
-    # rotate about y axis by roll
-    # rotate about z axis by heading + hang
-    intruder = np.array([0, r, 0]).reshape(-1, 1)
-    intruder = np.matmul(rot_matrix('z', -1*(ownship.h + hang)), intruder)
-    intruder = np.matmul(rot_matrix('x', ownship.p + vang), intruder)
-    intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
-    intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
-    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
-    return intruder_obj # comment out this line to toggle between methods 1 and 2
-
-    # SECOND METHOD BELOW
     # Set initial cartesian coordinates
     e1 = r * np.sin(inclination) * np.cos(azimuth)
     n1 = r * np.sin(inclination) * np.sin(azimuth)
     u1 = r * np.cos(inclination)
 
-    # Rotate according to Tait Bryant Convention
+    # Rotate according to Tait-Bryant Convention
     intruder = np.array([e1, n1, u1]).reshape(-1, 1)
-    intruder = np.matmul(rot_matrix('z', -1*ownship.h), intruder)
-    intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
     intruder = np.matmul(rot_matrix('y', ownship.r), intruder)
+    intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
+    intruder = np.matmul(rot_matrix('z', -1*ownship.h), intruder)
     intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
     intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
 
-    return intruder_obj
-
-'''OLD. Delete?
-def get_intruder_position(e0, n0, u0, h0, r, hang, vang, p0, r0):
-    """Generates intruder position based on ownship and relative angles
-    
-    Parameters
-    ----------
-    e0, n0, u0 : float
-        eastward, northward, and upward distance of ownship from origin location in meters 
-    h0 : float
-        heading of ownship in degrees
-    z : int
-        diagonal distance of intruder from ownship in meters (as the crow flies?)
-    hang, vang : float
-        horizontal and vertical angle of intruder from ownship in degrees
-    p0, r0 : int
-        pitch and roll of ownship in degrees
-    
-    Returns
-    -------
-    e1, n1, u1 : float
-        eastward, northward, an dupward position of intruder from origin in meters
-    """
-
-    inclination = np.deg2rad(vang)
-    azimuth = np.deg2rad(hang)
-    e1 = r * np.sin(inclination) * np.cos(azimuth)
-    n1 = r * np.sin(inclination) * np.sin(azimuth)
-    u1 = r * np.cos(inclination)
-
-    # Rotate
-    intruder = np.array([e1, n1, u1]).reshape(-1,1)
-    intruder = np.matmul(rot_matrix('y', r0), intruder)
-    intruder = np.matmul(rot_matrix('x', p0), intruder)
-    intruder = np.matmul(rot_matrix('z', h0), intruder)
-    return intruder[0], intruder[1], intruder[2]
-
-
-    # BELOW THIS IS WHAT WAS HERE BEFORE
-    e1 = z * np.tan(np.rad2deg(hang))
-    n1 = z
-    u1 = z * np.tan(np.rad2deg(vang))
-
-    # Rotate
-    n1 = (z / np.cos(np.rad2deg(hang))) * \
-        np.cos(np.rad2deg(h0 + hang))
-    e1 = (z / np.cos(np.rad2deg(hang))) * \
-        np.sin(np.rad2deg(h0 + hang))
-
-    # Translate
-    e1 += e0
-    n1 += n0
-    u1 += u0
-
-    return e1, n1, u1'''
+    return intruder_obj 
 
 def sample_random_state():
     """Generates ownship and intruder position values
@@ -195,7 +126,7 @@ def gen_data(client):
     screen_shot = mss.mss()
     csv_file = s.OUTDIR + 'state_data.csv'
     with open(csv_file, 'w') as fd:
-        fd.write("filename,e0,n0,u0,h0,vang,hang,z,e1,n1,u1,h1\n")
+        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1\n")
 
     for i in range(s.NUM_SAMPLES):
         # Sample random state
@@ -219,8 +150,8 @@ def gen_data(client):
         
         # Write to csv file
         with open(csv_file, 'a') as fd:
-            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
-                     (i, ownship.e, ownship.n, ownship.u, ownship.h, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h))
+            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
+                     (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h))
 
 def run_data_generation():
     client = XPlaneConnect()
@@ -251,13 +182,13 @@ def testing_locs():
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    o = Aircraft(0, 0, 0, 0, 30, pitch=30, roll=30)
+    o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
     print(o)
     set_position(client, o)
-    i = Aircraft(1, 0, 10, 0, 0, pitch=0, roll=0)
+    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
     set_position(client, i)
     #time.sleep(2)
-    i = get_intruder_position(o, 100, -10, 10, 0)
+    i = get_intruder_position(o, 20, 0, 0, 0)
     print(i)
     set_position(client, i)
 

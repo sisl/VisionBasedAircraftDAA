@@ -5,6 +5,7 @@
 import mss
 import cv2
 import pymap3d as pm
+import json
 
 from xpc3 import *
 from xpc3_helper import *
@@ -153,8 +154,7 @@ def gen_data(client):
             fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
                      (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h))
 
-def run_data_generation():
-    client = XPlaneConnect()
+def run_data_generation(client):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
@@ -176,13 +176,47 @@ def printOwnshipPosition(client):
     print("y_agl: %.14f" % y_agl)
     print("ref: [%.14f, %.14f, %.14f]" % (lat, lon, elev))
 
+def get_fov(client):
+    hfov = client.getDREF("sim/graphics/view/field_of_view_deg")
+    vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")
+    return hfov, vfov
+
+def set_metadata(client):
+    hfov, vfov = get_fov(client)
+    data = {
+        "hfov": hfov[0],
+        "vfov": vfov[0]
+    }
+
+    json_object = json.dumps(data, indent=4)
+ 
+    # Writing to sample.json
+    with open("metadata.json", "w") as outfile:
+        outfile.write(json_object)
+
+
 # code to help obtain new starting positions
-def testing_locs():
-    client = XPlaneConnect()
+def testing_locs(client):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
+    get_fov(client)
 
     o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
+    set_position(client, o)
+
+    for p in range(90):
+        for r in range(90):
+            for h in range(90):
+                o = Aircraft(0, 0, 0, 0, h, pitch=p, roll=r)
+                i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
+                set_position(client, o)
+                i = get_intruder_position(o, 60.0, 10, 10, 0)
+                set_position(client, i)
+                time.sleep(0.02)
+
+    return
+
+
     print(o)
     set_position(client, o)
     i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
@@ -193,5 +227,8 @@ def testing_locs():
     set_position(client, i)
 
 if __name__ == "__main__":
-    testing_locs()
-    #run_data_generation()
+    client = XPlaneConnect()
+    set_metadata(client)
+
+    #testing_locs(client)
+    run_data_generation(client)

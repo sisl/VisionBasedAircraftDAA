@@ -199,10 +199,29 @@ def set_metadata(client):
 def testing_locs(client):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
-    get_fov(client)
+    print(get_fov(client))
+
 
     o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
+    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
     set_position(client, o)
+    set_position(client, i)
+    time.sleep(10)
+
+    for v in range(25):
+        for h in range(40):
+            i = get_intruder_position(o, 60.0, h, v, 0)
+            set_position(client, i)
+            time.sleep(0.01)
+
+    i = get_intruder_position(o, 60.0, 40, 0, 0)
+    set_position(client, i)
+    time.sleep(2)
+
+    i = get_intruder_position(o, 60.0, 0, 25, 0)
+    set_position(client, i)
+    time.sleep(2)
+    '''
 
     for p in range(90):
         for r in range(90):
@@ -210,9 +229,9 @@ def testing_locs(client):
                 o = Aircraft(0, 0, 0, 0, h, pitch=p, roll=r)
                 i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
                 set_position(client, o)
-                i = get_intruder_position(o, 60.0, 10, 10, 0)
+                i = get_intruder_position(o, 60.0, 38, 22, 0)
                 set_position(client, i)
-                time.sleep(0.02)
+                time.sleep(0.02)'''
 
     return
 
@@ -230,5 +249,5 @@ if __name__ == "__main__":
     client = XPlaneConnect()
     set_metadata(client)
 
-    #testing_locs(client)
-    run_data_generation(client)
+    testing_locs(client)
+    #run_data_generation(client)

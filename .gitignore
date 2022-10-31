@@ -1,1 +1,2 @@
 datasets/sample/*
+*__pycache__*

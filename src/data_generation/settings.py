@@ -21,8 +21,8 @@ ROLL_RANGE = (-45, 45) # degrees (-90 = full roll left, 90 = full roll right)
 # INTRUDER POSITION
 # all in (min, max) form
 INTRUDER_HEADING = (0.0, 360.0) # degrees
-VANG_RANGE = (-15.0, 15.0) # degrees, vertical angle from ownship
-HANG_RANGE = (-25.0, 25.0) # degrees, horizontal angle from ownship
+VANG_RANGE = (-20, 20) # degrees, vertical angle from ownship
+HANG_RANGE = (-30, 30) # degrees, horizontal angle from ownship
 DIST_RANGE = (20, 500) # meters, diagonal distance from ownship
 
 # TIME OF DAY
@@ -40,6 +40,11 @@ CLOUD_COVER = 4
 # SAMPLING
 # Number of samples desired for dataset
 NUM_SAMPLES = 10
+
+# BOUNDING BOX PARAMS
+OFFSET = -36
+AW0 = 0
+DAW = 18000
 
 
 

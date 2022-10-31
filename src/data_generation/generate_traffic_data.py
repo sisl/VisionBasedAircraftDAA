@@ -45,8 +45,8 @@ def set_position(client, aircraft):
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
-    # 4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions.
 def mult_matrix_vec(m, v):
+    """4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions"""
     dst = np.zeros(4)
     dst[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12]
     dst[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9] + v[3] * m[13]
@@ -54,11 +54,29 @@ def mult_matrix_vec(m, v):
     dst[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15]
     return dst
     
-def getCoord(client, i):
+def get_bb_coords(client, i):
+    """Calculates coordinates of intruder bounding box
+    
+    Parameters
+    ----------
+    client : SocketKind.SOCK_DGRAM
+        XPlaneConnect socket
+    i : int
+        id number of ownship intruder instantiation
+
+    Returns
+    -------
+    int
+        x position of intruder on screen from upper left 0,0
+    int
+        y position of intruder on screen from upper left 0,0
+    """
+
+    # retrieve x,y,z position of intruder
     acf_wrl = np.array([
-        client.getDREF("sim/flightmodel/position/local_x")[0],
-        client.getDREF("sim/flightmodel/position/local_y")[0],
-        client.getDREF("sim/flightmodel/position/local_z")[0],
+        client.getDREF("sim/multiplayer/position/plane1_x")[0],
+        client.getDREF("sim/multiplayer/position/plane1_y")[0],
+        client.getDREF("sim/multiplayer/position/plane1_z")[0],
         1.0
     ])
     
@@ -76,7 +94,6 @@ def getCoord(client, i):
     screen_w = client.getDREF("sim/graphics/view/window_width")[0]
     screen_h = client.getDREF("sim/graphics/view/window_height")[0]
 
-    
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
 
@@ -84,7 +101,7 @@ def getCoord(client, i):
     with open(coords_file, 'a') as fd:
             fd.write("%d,%f,%f\n" % (i, final_x, final_y))
 
-    print(f"{final_x}, {final_y}")
+    return final_x, screen_h - final_y
 
 def rot_matrix(axis, theta):
     theta = np.deg2rad(theta)
@@ -168,7 +185,7 @@ def gen_data(client):
     screen_shot = mss.mss()
     csv_file = s.OUTDIR + 'state_data.csv'
     with open(csv_file, 'w') as fd:
-        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1\n")
+        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
 
     coords_file = s.OUTDIR + 'coords_test.csv'
     with open(coords_file, 'w') as fd:
@@ -187,9 +204,8 @@ def gen_data(client):
 
         # Pause and then take the screenshot
         time.sleep(s.PAUSE_2)
-        time.sleep(1)
         ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[12:-12, :, :]
-        getCoord(client, i)
+        x_pos, y_pos = get_bb_coords(client, i)
 
         # Write the screenshot to a file
         print('%simgs/%d.jpg' % (s.OUTDIR, i))
@@ -197,8 +213,8 @@ def gen_data(client):
         
         # Write to csv file
         with open(csv_file, 'a') as fd:
-            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
-                     (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h))
+            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
+                     (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
 
 def run_data_generation(client):
     client.pauseSim(True)
@@ -211,27 +227,17 @@ def run_data_generation(client):
 
     gen_data(client)
 
-def printOwnshipPosition(client):
-    lat = client.getDREF("sim/flightmodel/position/latitude")[0]
-    lon = client.getDREF("sim/flightmodel/position/longitude")[0]
-    elev = client.getDREF("sim/flightmodel/position/elevation")[0]
-    y_agl = client.getDREF("sim/flightmodel/position/y_agl")[0]
-    print("Lat: %.14f" % lat)
-    print("Lon: %.14f" % lon)
-    print("Elevation: %.14f" % elev)
-    print("y_agl: %.14f" % y_agl)
-    print("ref: [%.14f, %.14f, %.14f]" % (lat, lon, elev))
-
-def get_fov(client):
-    hfov = client.getDREF("sim/graphics/view/field_of_view_deg")
-    vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")
-    return hfov, vfov
-
 def set_metadata(client):
-    hfov, vfov = get_fov(client)
+    hfov = client.getDREF("sim/graphics/view/field_of_view_deg")[0]
+    vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")[0]
+    screen_w = client.getDREF("sim/graphics/view/window_width")[0]
+    screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+
     data = {
-        "hfov": hfov[0],
-        "vfov": vfov[0]
+        "hfov": hfov,
+        "vfov": vfov,
+        "screen_w": screen_w,
+        "screen_h": screen_h
     }
 
     json_object = json.dumps(data, indent=4)
@@ -245,7 +251,6 @@ def set_metadata(client):
 def testing_locs(client):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
-    print(get_fov(client))
 
 
     o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)

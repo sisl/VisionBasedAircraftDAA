@@ -45,6 +45,47 @@ def set_position(client, aircraft):
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
+    # 4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions.
+def mult_matrix_vec(m, v):
+    dst = np.zeros(4)
+    dst[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12]
+    dst[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9] + v[3] * m[13]
+    dst[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + v[3] * m[14]
+    dst[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15]
+    return dst
+    
+def getCoord(client, i):
+    acf_wrl = np.array([
+        client.getDREF("sim/flightmodel/position/local_x")[0],
+        client.getDREF("sim/flightmodel/position/local_y")[0],
+        client.getDREF("sim/flightmodel/position/local_z")[0],
+        1.0
+    ])
+    
+    mv = client.getDREF("sim/graphics/view/world_matrix")
+    proj = client.getDREF("sim/graphics/view/projection_matrix_3d")
+    
+    acf_eye = mult_matrix_vec(mv, acf_wrl)
+    acf_ndc = mult_matrix_vec(proj, acf_eye)
+    
+    acf_ndc[3] = 1.0 / acf_ndc[3]
+    acf_ndc[0] *= acf_ndc[3]
+    acf_ndc[1] *= acf_ndc[3]
+    acf_ndc[2] *= acf_ndc[3]
+    
+    screen_w = client.getDREF("sim/graphics/view/window_width")[0]
+    screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+
+    
+    final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
+    final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
+
+    coords_file = s.OUTDIR + 'coords_test.csv'
+    with open(coords_file, 'a') as fd:
+            fd.write("%d,%f,%f\n" % (i, final_x, final_y))
+
+    print(f"{final_x}, {final_y}")
+
 def rot_matrix(axis, theta):
     theta = np.deg2rad(theta)
     if axis == 'x':
@@ -129,6 +170,10 @@ def gen_data(client):
     with open(csv_file, 'w') as fd:
         fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1\n")
 
+    coords_file = s.OUTDIR + 'coords_test.csv'
+    with open(coords_file, 'w') as fd:
+        fd.write("filename,x,y\n")
+
     for i in range(s.NUM_SAMPLES):
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
@@ -144,6 +189,7 @@ def gen_data(client):
         time.sleep(s.PAUSE_2)
         time.sleep(1)
         ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[12:-12, :, :]
+        getCoord(client, i)
 
         # Write the screenshot to a file
         print('%simgs/%d.jpg' % (s.OUTDIR, i))
@@ -249,5 +295,5 @@ if __name__ == "__main__":
     client = XPlaneConnect()
     set_metadata(client)
 
-    testing_locs(client)
-    #run_data_generation(client)
+    #testing_locs(client)
+    run_data_generation(client)

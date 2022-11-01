@@ -15,6 +15,8 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from scipy.stats import truncnorm
+import time
+import os
 
 
 class Aircraft:
@@ -54,7 +56,7 @@ def mult_matrix_vec(m, v):
     dst[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15]
     return dst
     
-def get_bb_coords(client, i):
+def get_bb_coords(client, i, screen_h, screen_w):
     """Calculates coordinates of intruder bounding box
     
     Parameters
@@ -91,15 +93,12 @@ def get_bb_coords(client, i):
     acf_ndc[1] *= acf_ndc[3]
     acf_ndc[2] *= acf_ndc[3]
     
-    screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+    # Bizaar issue with these not retrieving the correct window size
+    # screen_w = client.getDREF("sim/graphics/view/window_width")[0]
+    # screen_h = client.getDREF("sim/graphics/view/window_height")[0]
 
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
-
-    coords_file = s.OUTDIR + 'coords_test.csv'
-    with open(coords_file, 'a') as fd:
-            fd.write("%d,%f,%f\n" % (i, final_x, final_y))
 
     return final_x, screen_h - final_y
 
@@ -183,13 +182,12 @@ def gen_data(client):
     """
 
     screen_shot = mss.mss()
-    csv_file = s.OUTDIR + 'state_data.csv'
-    with open(csv_file, 'w') as fd:
+    outdir = s.OUTDIR + "data_" + str(time.time()) + "/"
+    os.makedirs(outdir)
+    os.makedirs(outdir + "imgs/")
+    csv_file = outdir + 'state_data.csv'
+    with open(csv_file, 'w+') as fd:
         fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
-
-    coords_file = s.OUTDIR + 'coords_test.csv'
-    with open(coords_file, 'w') as fd:
-        fd.write("filename,x,y\n")
 
     for i in range(s.NUM_SAMPLES):
         # Sample random state
@@ -204,12 +202,13 @@ def gen_data(client):
 
         # Pause and then take the screenshot
         time.sleep(s.PAUSE_2)
-        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[12:-12, :, :]
-        x_pos, y_pos = get_bb_coords(client, i)
+        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
+        sh, sw, _ = ss.shape
+        x_pos, y_pos = get_bb_coords(client, i, sh, sw)
 
         # Write the screenshot to a file
-        print('%simgs/%d.jpg' % (s.OUTDIR, i))
-        cv2.imwrite('%simgs/%d.jpg' % (s.OUTDIR, i), ss)
+        print('%simgs/%d.jpg' % (outdir, i))
+        cv2.imwrite('%simgs/%d.jpg' % (outdir, i), ss)
         
         # Write to csv file
         with open(csv_file, 'a') as fd:

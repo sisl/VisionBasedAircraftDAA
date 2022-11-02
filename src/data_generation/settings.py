@@ -39,7 +39,8 @@ CLOUD_COVER = 4
 
 # SAMPLING
 # Number of samples desired for dataset
-NUM_SAMPLES = 10
+NUM_TRAIN = 5
+NUM_VALID = 5
 
 # BOUNDING BOX PARAMS
 OFFSET = 0

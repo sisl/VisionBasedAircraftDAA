@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import truncnorm
 import time
 import os
+import yaml
 
 
 class Aircraft:
@@ -168,6 +169,15 @@ def sample_random_state():
 
     return ownship, intruder, vang, hang, dist
 
+def make_yaml_file(outdir):
+    data = {
+        "train": f"{outdir}/train/images",
+        "val": f"{outdir}/valid/images",
+        "names": {0: "aircraft"}
+    }
+    with open(f'{outdir}data.yaml', 'w+') as out:
+        yaml.dump(data, out, default_flow_style=False, sort_keys=False)
+
 def gen_data(client):
     """Generates dataset based on parameters in settings.py
 
@@ -180,12 +190,18 @@ def gen_data(client):
     screen_shot = mss.mss()
     outdir = s.OUTDIR + "data_" + str(time.time()) + "/"
     os.makedirs(outdir)
-    os.makedirs(outdir + "imgs/")
+    os.makedirs(outdir + "train/images/")
+    os.makedirs(outdir + "valid/images/")
+
+    make_yaml_file(outdir)
+    set_metadata(client, outdir)
     csv_file = outdir + 'state_data.csv'
     with open(csv_file, 'w+') as fd:
         fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
 
-    for i in range(s.NUM_SAMPLES):
+    image_dir = outdir + "train/images/"
+    for i in range(s.NUM_TRAIN + s.NUM_VALID):
+        if i == s.NUM_TRAIN: image_dir = outdir + "valid/images/"
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 
@@ -203,8 +219,8 @@ def gen_data(client):
         x_pos, y_pos = get_bb_coords(client, i, sh, sw)
 
         # Write the screenshot to a file
-        print('%simgs/%d.jpg' % (outdir, i))
-        cv2.imwrite('%simgs/%d.jpg' % (outdir, i), ss)
+        print(f"{image_dir}{i}.jpg")
+        cv2.imwrite(f"{image_dir}{i}.jpg", ss)
         
         # Write to csv file
         with open(csv_file, 'a') as fd:
@@ -222,7 +238,7 @@ def run_data_generation(client):
 
     gen_data(client)
 
-def set_metadata(client):
+def set_metadata(client, outdir):
     hfov = client.getDREF("sim/graphics/view/field_of_view_deg")[0]
     vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")[0]
     screen_w = client.getDREF("sim/graphics/view/window_width")[0]
@@ -238,7 +254,7 @@ def set_metadata(client):
     json_object = json.dumps(data, indent=4)
  
     # Writing to sample.json
-    with open("metadata.json", "w") as outfile:
+    with open(outdir + "metadata.json", "w") as outfile:
         outfile.write(json_object)
 
 
@@ -293,7 +309,7 @@ def testing_locs(client):
 
 if __name__ == "__main__":
     client = XPlaneConnect()
-    set_metadata(client)
+    print(client.getDREF("sim/graphics/view/panel_visible_win_l"))
 
     #testing_locs(client)
-    run_data_generation(client)
+   # run_data_generation(client)

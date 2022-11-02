@@ -159,7 +159,6 @@ class XPlaneConnect(object):
 
         # Read response
         resultBuf = self.readUDP()
-        print("h1")
         if len(resultBuf) != 34:
             raise ValueError("Unexpected response length.")
         

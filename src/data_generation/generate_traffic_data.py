@@ -1,7 +1,3 @@
-# DONE: intruder position
-# TODO: clean up file
-# TODO: 1920x1080 screen resolution before taking pictures
-
 import mss
 import cv2
 import pymap3d as pm

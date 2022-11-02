@@ -1,3 +1,10 @@
+# TODOs in order
+# TODO: generate YOLO format directly - one script that generates images, create folder structure, training and validation images, put state data in YOLO folder
+# TODO: command line args and then generate it as json file, shell scripts
+# TODO: constants.py file for the things that will never change
+# TODO; get it to a point where it's super clean and documented -- fully documented data generation python. docstrings for functions, removing old functions, detailed instructions in readme for a small dataset
+# TODO: auto cropping for images -- get screen coordinates from xplane? or screenshot window only?
+
 import pandas as pd
 import numpy as np
 import cv2

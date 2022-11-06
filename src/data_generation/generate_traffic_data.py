@@ -6,7 +6,7 @@ import json
 from xpc3 import *
 from xpc3_helper import *
 import data_generation.constants as c
-from PIL import Image
+from PIL import ImageGrab
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -16,6 +16,9 @@ import os
 import yaml
 import sys
 import argparse
+import win32gui
+import pyautogui
+import win32clipboard
 
 
 class Aircraft:
@@ -44,7 +47,6 @@ def set_position(client, aircraft):
     """
     ref = c.REGION_OPTIONS[args.location]
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
-    print(aircraft)
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
 def mult_matrix_vec(m, v):
@@ -82,6 +84,7 @@ def get_bb_coords(client, i, screen_h, screen_w):
         1.0
     ])
     
+    
     mv = client.getDREF("sim/graphics/view/world_matrix")
     proj = client.getDREF("sim/graphics/view/projection_matrix_3d")
     
@@ -94,8 +97,9 @@ def get_bb_coords(client, i, screen_h, screen_w):
     acf_ndc[2] *= acf_ndc[3]
     
     # Bizaar issue with these not retrieving the correct window size
-    # screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    # screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+    #screen_w = client.getDREF("sim/graphics/view/window_width")[0]
+    #screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+    print(client.getDREF("sim/graphics/view/window_width")[0])
 
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
@@ -153,9 +157,9 @@ def sample_random_state():
     """
 
     # Ownship state
-    e0 = np.random.uniform(-args.enurange, args.enurange)  # meters
-    n0 = np.random.uniform(-args.enurange, args.enurange)  # meters
-    u0 = np.random.uniform(-500, 500)  # meters
+    e0 = np.random.uniform(-args.enrange, args.enrange)  # meters
+    n0 = np.random.uniform(-args.enrange, args.enrange)  # meters
+    u0 = np.random.uniform(-args.urange, args.urange)  # meters
     h0 = np.random.uniform(args.own_h[0], args.own_h[1])  # degrees
     p0 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=10) # degrees
     r0 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
@@ -172,6 +176,27 @@ def sample_random_state():
 
     return ownship, intruder, vang, hang, dist
 
+def onMouseDown(event):
+    print(event)
+
+def trace_window(x, y, height, width):
+    move_time = 1
+    pyautogui.moveTo(x,y + 1,move_time)
+    pyautogui.moveTo(x,height,move_time)
+    pyautogui.moveTo(width,height,move_time)
+    pyautogui.moveTo(width,y + 1,move_time)
+    pyautogui.moveTo(x,y + 1,move_time)
+
+def get_window_dims():
+    width = client.getDREF("sim/graphics/view/window_width")[0]
+    height = client.getDREF("sim/graphics/view/window_height")[0]
+    trace_window(0,0,height, width)
+    while input("Is this the window you want captured? (Y/N): ") == "N":
+        tl_x = int(input("New top left x: "))
+        tl_y = int(input("New top left y: "))
+        trace_window(tl_x, tl_y, height, width)
+    return tl_x, tl_y
+
 def gen_data(client, outdir):
     """Generates dataset based on parameters in settings.py
 
@@ -181,7 +206,43 @@ def gen_data(client, outdir):
         XPlaneConnect socket
     """
 
+    '''
+    hwnd = client.getDREF("sim/operation/windows/system_window")[0]
+    rect = win32gui.GetWindowRect(hwnd)
+    desktop = win32gui.GetDesktopWindow()
+    dt_l, dt_t, dt_r, dt_b = win32gui.GetWindowRect(desktop)
+    #print(dir(win32gui))
+    #print(win32gui.GetWindowRgn(hwnd))
+    centre_x, centre_y = win32gui.ClientToScreen( desktop, ( (dt_r-dt_l)//2, (dt_b-dt_t)//2) )
+    rect = win32gui.GetClientRect(hwnd)
+    bbox = win32gui.GetClientRect(hwnd)
+    img = ImageGrab.grab(bbox)
+    img2 = pyautogui.screenshot()
+
+    win32clipboard.OpenClipboard()
+    pyautogui.hotkey('win', 'shift', 's')
+    time.sleep(5)
+    print(win32clipboard.GetClipboardData())
+
+    dc = win32gui.GetWindowDC(hwnd)
+    print(pyautogui.size())'''
+
+
+    #print(win32gui.GetRgnBox())
+    #print(dc)
+    #print(win32gui.GetWindowExtEx(dc))
+    #print(win32gui.GetClientRect(hwnd))
+    #print(client.getDREF("sim/graphics/view/window_width")[0])
+    #print(client.getDREF("sim/graphics/view/window_height")[0])
+
     screen_shot = mss.mss()
+    ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
+    sh, sw, _ = ss.shape
+
+    height = client.getDREF("sim/graphics/view/window_height")[0]
+    
+    tl_y = int(sh - height)
+    print(tl_y)
 
     csv_file = outdir + 'state_data.csv'
     image_dir = outdir + "train/images/"
@@ -199,7 +260,7 @@ def gen_data(client, outdir):
 
         # Pause and then take the screenshot
         time.sleep(c.PAUSE_2)
-        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
+        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[tl_y:, :, :]
         sh, sw, _ = ss.shape
         x_pos, y_pos = get_bb_coords(client, i, sh, sw)
 
@@ -216,62 +277,12 @@ def run_data_generation(client, outdir):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    set_position(client, Aircraft(1, 0, 0, 0, 0, pitch=0, roll=0))
+    set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0))
     set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
 
     time.sleep(c.PAUSE_1)
 
     gen_data(client, outdir)
-
-
-# code to help obtain new starting positions
-def testing_locs(client):
-    client.pauseSim(True)
-    client.sendDREF("sim/operation/override/override_joystick", 1)
-
-
-    o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
-    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-    set_position(client, o)
-    set_position(client, i)
-    time.sleep(10)
-
-    for v in range(25):
-        for h in range(40):
-            i = get_intruder_position(o, 60.0, h, v, 0)
-            set_position(client, i)
-            time.sleep(0.01)
-
-    i = get_intruder_position(o, 60.0, 40, 0, 0)
-    set_position(client, i)
-    time.sleep(2)
-
-    i = get_intruder_position(o, 60.0, 0, 25, 0)
-    set_position(client, i)
-    time.sleep(2)
-    '''
-
-    for p in range(90):
-        for r in range(90):
-            for h in range(90):
-                o = Aircraft(0, 0, 0, 0, h, pitch=p, roll=r)
-                i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-                set_position(client, o)
-                i = get_intruder_position(o, 60.0, 38, 22, 0)
-                set_position(client, i)
-                time.sleep(0.02)'''
-
-    return
-
-
-    print(o)
-    set_position(client, o)
-    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-    set_position(client, i)
-    #time.sleep(2)
-    i = get_intruder_position(o, 20, 0, 0, 0)
-    print(i)
-    set_position(client, i)
 
 def make_yaml_file(outdir):
     data = {
@@ -309,7 +320,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-l", "--location", dest = "location", default = "Palo Alto", help="Airport Location", type=str)
-    parser.add_argument("-r", "--enurange", dest = "enurange", default = 5000.0, help="Distance in meters ENU from location", type=float)
+    parser.add_argument("-enr", "--enrange", dest = "enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
+    parser.add_argument("-ur", "--urange", dest = "urange", default=500.0, help="Distance in meters vertically from location", type=float)
     parser.add_argument("-w", "--weather", dest = "weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
     parser.add_argument("-ds", "--daystart", dest = "daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-de", "--dayend", dest = "dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
@@ -321,6 +333,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     outdir = prepare_files()
+    print(args)
 
-    #testing_locs(client)
     run_data_generation(client, outdir)

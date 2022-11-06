@@ -52,7 +52,7 @@ def gen_labels(folder, metadata):
         own = Aircraft(0, xp_data['e0'], xp_data['n0'], xp_data['u0'], xp_data['h0'])
         intr = Aircraft(0, xp_data['e1'], xp_data['n1'], xp_data['u1'], xp_data['h1'])
         xp, yp = xp_data['intr_x'], xp_data['intr_y']
-        h, w = get_bb_size(own, intr, daw=args.daw)
+        h, w = get_bb_size(own, intr, daw=metadata['daw'])
 
         file_name = curr_dir + "labels/" + str(i) + ".txt"
         with open(file_name, 'w+') as fd:
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     parser.set_defaults(outdir="../datasets/")
     args = parser.parse_args()
 
-    with open(args.outdir + data_folder + "metadata.json", "r") as metafile:
+    with open(args.outdir + data_folder + "/metadata.json", "r") as metafile:
         metadata = json.load(metafile)
 
     gen_labels(data_folder, metadata)

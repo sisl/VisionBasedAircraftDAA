@@ -5,7 +5,7 @@ import json
 
 from xpc3 import *
 from xpc3_helper import *
-import data_generation.settings as s
+import data_generation.constants as c
 from PIL import Image
 import numpy as np
 import time
@@ -14,6 +14,8 @@ from scipy.stats import truncnorm
 import time
 import os
 import yaml
+import sys
+import argparse
 
 
 class Aircraft:
@@ -40,8 +42,9 @@ def set_position(client, aircraft):
     aircraft : Aircraft
         object containing details about craft's position
     """
-    ref = s.REGION_OPTIONS[s.REGION_CHOICE]
+    ref = c.REGION_OPTIONS[args.location]
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
+    print(aircraft)
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
 def mult_matrix_vec(m, v):
@@ -150,35 +153,26 @@ def sample_random_state():
     """
 
     # Ownship state
-    e0 = np.random.uniform(-s.EAST_RANGE, s.EAST_RANGE)  # meters
-    n0 = np.random.uniform(-s.NORTH_RANGE, s.NORTH_RANGE)  # meters
-    u0 = np.random.uniform(-s.UP_RANGE, s.UP_RANGE)  # meters
-    h0 = np.random.uniform(s.OWNSHIP_HEADING[0], s.OWNSHIP_HEADING[1])  # degrees
-    p0 = truncnorm.rvs(s.PITCH_RANGE[0], s.PITCH_RANGE[1], loc=0, scale=10) # degrees
-    r0 = truncnorm.rvs(s.ROLL_RANGE[0], s.ROLL_RANGE[1], loc=0, scale=10) # degrees
+    e0 = np.random.uniform(-args.enurange, args.enurange)  # meters
+    n0 = np.random.uniform(-args.enurange, args.enurange)  # meters
+    u0 = np.random.uniform(-500, 500)  # meters
+    h0 = np.random.uniform(args.own_h[0], args.own_h[1])  # degrees
+    p0 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=10) # degrees
+    r0 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
     ownship = Aircraft(0, e0, n0, u0, h0, p0, r0)
 
     # Info about relative position of intruder
-    vang = np.random.uniform(s.VANG_RANGE[0], s.VANG_RANGE[1])  # degrees
-    hang = np.random.uniform(s.HANG_RANGE[0], s.HANG_RANGE[1])  # degrees
-    dist = np.random.uniform(s.DIST_RANGE[0], s.DIST_RANGE[1])  # meters
+    vang = np.random.uniform(-args.vfov/2, args.vfov/2)  # degrees
+    hang = np.random.uniform(-args.hfov/2, args.hfov/2)  # degrees
+    dist = np.random.uniform(args.radius_range[0], args.radius_range[1])  # meters
     
     # Intruder state
-    h1 = np.random.uniform(s.INTRUDER_HEADING[0], s.INTRUDER_HEADING[1])  # degrees
+    h1 = np.random.uniform(args.intr_h[0], args.intr_h[1])  # degrees
     intruder = get_intruder_position(ownship, dist, hang, vang, h1)
 
     return ownship, intruder, vang, hang, dist
 
-def make_yaml_file(outdir):
-    data = {
-        "train": f"{outdir}/train/images",
-        "val": f"{outdir}/valid/images",
-        "names": {0: "aircraft"}
-    }
-    with open(f'{outdir}data.yaml', 'w+') as out:
-        yaml.dump(data, out, default_flow_style=False, sort_keys=False)
-
-def gen_data(client):
+def gen_data(client, outdir):
     """Generates dataset based on parameters in settings.py
 
     Parameters
@@ -188,32 +182,23 @@ def gen_data(client):
     """
 
     screen_shot = mss.mss()
-    outdir = s.OUTDIR + "data_" + str(time.time()) + "/"
-    os.makedirs(outdir)
-    os.makedirs(outdir + "train/images/")
-    os.makedirs(outdir + "valid/images/")
 
-    make_yaml_file(outdir)
-    set_metadata(client, outdir)
     csv_file = outdir + 'state_data.csv'
-    with open(csv_file, 'w+') as fd:
-        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
-
     image_dir = outdir + "train/images/"
-    for i in range(s.NUM_TRAIN + s.NUM_VALID):
-        if i == s.NUM_TRAIN: image_dir = outdir + "valid/images/"
+    for i in range(args.num_train + args.num_valid):
+        if i == args.num_train: image_dir = outdir + "valid/images/"
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 
         # Position the aircraft
-        zulu_time = s.TIME_OPTIONS[s.REGION_CHOICE] * 3600
-        zulu_time += np.random.uniform(s.TIME_OF_DAY_START * 3600, s.TIME_OF_DAY_END * 3600)
+        zulu_time = c.TIME_OPTIONS[args.location] * 3600
+        zulu_time += np.random.uniform(args.daystart * 3600, args.dayend * 3600)
         client.sendDREF("sim/time/zulu_time_sec", zulu_time)
         set_position(client, ownship)
         set_position(client, intruder)
 
         # Pause and then take the screenshot
-        time.sleep(s.PAUSE_2)
+        time.sleep(c.PAUSE_2)
         ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
         sh, sw, _ = ss.shape
         x_pos, y_pos = get_bb_coords(client, i, sh, sw)
@@ -227,35 +212,16 @@ def gen_data(client):
             fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
                      (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
 
-def run_data_generation(client):
+def run_data_generation(client, outdir):
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
     set_position(client, Aircraft(1, 0, 0, 0, 0, pitch=0, roll=0))
     set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
 
-    time.sleep(s.PAUSE_1)
+    time.sleep(c.PAUSE_1)
 
-    gen_data(client)
-
-def set_metadata(client, outdir):
-    hfov = client.getDREF("sim/graphics/view/field_of_view_deg")[0]
-    vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")[0]
-    screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    screen_h = client.getDREF("sim/graphics/view/window_height")[0]
-
-    data = {
-        "hfov": hfov,
-        "vfov": vfov,
-        "screen_w": screen_w,
-        "screen_h": screen_h
-    }
-
-    json_object = json.dumps(data, indent=4)
- 
-    # Writing to sample.json
-    with open(outdir + "metadata.json", "w") as outfile:
-        outfile.write(json_object)
+    gen_data(client, outdir)
 
 
 # code to help obtain new starting positions
@@ -307,9 +273,54 @@ def testing_locs(client):
     print(i)
     set_position(client, i)
 
+def make_yaml_file(outdir):
+    data = {
+        "train": f"{outdir}/train/images",
+        "val": f"{outdir}/valid/images",
+        "names": {0: "aircraft"}
+    }
+    with open(f'{outdir}data.yaml', 'w+') as out:
+        yaml.dump(data, out, default_flow_style=False, sort_keys=False)
+
+def prepare_files():
+    outdir = args.outdir + "data_" + str(time.time()) + "/"
+    args.outdir = outdir
+    os.makedirs(outdir)
+    os.makedirs(outdir + "train/images/")
+    os.makedirs(outdir + "valid/images/")
+    os.makedirs(outdir + "train/labels/")
+    os.makedirs(outdir + "valid/labels/")
+
+    make_yaml_file(outdir)
+
+    # set metadata
+    json_object = json.dumps(vars(args), indent=4)
+    with open(outdir + "metadata.json", "w") as outfile:
+        outfile.write(json_object)
+
+    csv_file = outdir + 'state_data.csv'
+    with open(csv_file, 'w+') as fd:
+        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
+    return outdir
+
 if __name__ == "__main__":
     client = XPlaneConnect()
-    print(client.getDREF("sim/graphics/view/panel_visible_win_l"))
+    print(sys.argv)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-l", "--location", dest = "location", default = "Palo Alto", help="Airport Location", type=str)
+    parser.add_argument("-r", "--enurange", dest = "enurange", default = 5000.0, help="Distance in meters ENU from location", type=float)
+    parser.add_argument("-w", "--weather", dest = "weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
+    parser.add_argument("-ds", "--daystart", dest = "daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-de", "--dayend", dest = "dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.set_defaults(own_h=(0.0,360.0), own_p_max=45.0, own_r_max=45.0)
+    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_range=(20,500))
+    parser.set_defaults(num_train=5, num_valid=5)
+    parser.set_defaults(daw=20000)
+    parser.set_defaults(outdir="../datasets/")
+
+    args = parser.parse_args()
+    outdir = prepare_files()
 
     #testing_locs(client)
-   # run_data_generation(client)
+    run_data_generation(client, outdir)

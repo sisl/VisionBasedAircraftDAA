@@ -1,7 +1,7 @@
 # TODOs in order
 # DONE: generate YOLO format directly - one script that generates images, create folder structure, training and validation images, put state data in YOLO folder
-# TODO: command line args and then generate it as json file, shell scripts
-# TODO: constants.py file for the things that will never change
+# DONE: command line args and then generate it as json file, shell scripts
+# DONE: constants.py file for the things that will never change
 # TODO; get it to a point where it's super clean and documented -- fully documented data generation python. docstrings for functions, removing old functions, detailed instructions in readme for a small dataset
 # TODO: auto cropping for images -- get screen coordinates from xplane? or screenshot window only?
 
@@ -11,6 +11,9 @@ import cv2
 import data_generation.settings as s
 import os
 from data_generation.generate_traffic_data import Aircraft
+import argparse
+import json
+
 
 def get_bb_size(o, i, aw0=0, daw=1):
     """Gets height and width of bounding box"""
@@ -27,7 +30,7 @@ def get_bb_size(o, i, aw0=0, daw=1):
     print(f"{w}, {h}")
     return h, w
 
-def gen_labels(folder):
+def gen_labels(folder, metadata):
     """Writes bounding box data in Yolo format
     
     Parameters
@@ -37,32 +40,33 @@ def gen_labels(folder):
     """
 
     # Load in the positions
-    outdir = s.OUTDIR + folder + "/"
-    os.makedirs(outdir + "train/labels/")
-    os.makedirs(outdir + "valid/labels/")
+    outdir = metadata['outdir']
     data_file = outdir + "state_data.csv"
-    print(outdir + "train/images/0.jpg")
     sh, sw, _ = cv2.imread(outdir + "train/images/0.jpg").shape
     df = pd.read_csv(data_file)
 
     curr_dir = outdir + "train/"
     for i in range(len(df)):
-        if i == s.NUM_TRAIN: curr_dir = outdir + "valid/"
+        if i == metadata['num_train']: curr_dir = outdir + "valid/"
         xp_data = df.iloc[i]
         own = Aircraft(0, xp_data['e0'], xp_data['n0'], xp_data['u0'], xp_data['h0'])
         intr = Aircraft(0, xp_data['e1'], xp_data['n1'], xp_data['u1'], xp_data['h1'])
-        xp, yp = xp_data['intr_x'], xp_data['intr_y'] + s.OFFSET
-        h, w = get_bb_size(own, intr, aw0=s.AW0, daw=s.DAW)
+        xp, yp = xp_data['intr_x'], xp_data['intr_y']
+        h, w = get_bb_size(own, intr, daw=args.daw)
 
         file_name = curr_dir + "labels/" + str(i) + ".txt"
         with open(file_name, 'w+') as fd:
             fd.write("0 %f %f %f %f\n" %
                      (xp  / sw, yp / sh, w / sw, h / sh))
     
-    #label_name = file_name = outdir + "imgs/darket.labels"
-    #with open(label_name, 'w') as fd:
-        #fd.write("aircraft")
-    
 if __name__ == "__main__":
     data_folder = input("Name of folder for data you would like to label: ")
-    gen_labels(data_folder)
+
+    parser = argparse.ArgumentParser()
+    parser.set_defaults(outdir="../datasets/")
+    args = parser.parse_args()
+
+    with open(args.outdir + data_folder + "metadata.json", "r") as metafile:
+        metadata = json.load(metafile)
+
+    gen_labels(data_folder, metadata)

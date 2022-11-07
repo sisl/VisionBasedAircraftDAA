@@ -1,39 +1,17 @@
 import mss
 import cv2
 import pymap3d as pm
-import json
 
 from xpc3 import *
 from xpc3_helper import *
 import data_generation.constants as c
-from PIL import ImageGrab
 import numpy as np
 import time
-import matplotlib.pyplot as plt
 from scipy.stats import truncnorm
 import time
-import os
-import yaml
 import sys
 import argparse
-import win32gui
-import pyautogui
-import win32clipboard
-
-
-class Aircraft:
-    def __init__(self, ac_num, east, north, up, heading, pitch=-998, roll=-998):
-        self.id = ac_num
-        self.e = east
-        self.n = north
-        self.u = up
-        self.h = heading
-        self.p = pitch
-        self.r = roll
-    
-    def __str__(self):
-        out = "Craft: %.2f, East: %.2f, North: %.2f, Up: %.2f, Heading: %.2f, Pitch: %.2f, Roll: %.2f" % (self.id, self.e, self.n, self.u, self.h, self.p, self.r)
-        return out
+from data_generation.helpers import *
 
 def set_position(client, aircraft):
     """Sets position of aircraft in XPlane
@@ -45,12 +23,14 @@ def set_position(client, aircraft):
     aircraft : Aircraft
         object containing details about craft's position
     """
+
     ref = c.REGION_OPTIONS[args.location]
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
 def mult_matrix_vec(m, v):
     """4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions"""
+
     dst = np.zeros(4)
     dst[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12]
     dst[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9] + v[3] * m[13]
@@ -84,7 +64,6 @@ def get_bb_coords(client, i, screen_h, screen_w):
         1.0
     ])
     
-    
     mv = client.getDREF("sim/graphics/view/world_matrix")
     proj = client.getDREF("sim/graphics/view/projection_matrix_3d")
     
@@ -99,7 +78,6 @@ def get_bb_coords(client, i, screen_h, screen_w):
     # Bizaar issue with these not retrieving the correct window size
     #screen_w = client.getDREF("sim/graphics/view/window_width")[0]
     #screen_h = client.getDREF("sim/graphics/view/window_height")[0]
-    print(client.getDREF("sim/graphics/view/window_width")[0])
 
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
@@ -107,6 +85,8 @@ def get_bb_coords(client, i, screen_h, screen_w):
     return final_x, screen_h - final_y
 
 def rot_matrix(axis, theta):
+    """Returns the rotation matrix for a given theta about a give access"""
+
     theta = np.deg2rad(theta)
     if axis == 'x':
         return np.matrix([[ 1, 0           , 0           ],
@@ -123,6 +103,25 @@ def rot_matrix(axis, theta):
     return None
 
 def get_intruder_position(ownship, r, hang, vang, h):
+    """Get position of intrudor according to ownship and parameters
+    
+    Parameters
+    ----------
+    ownship : Aircraft
+        object storing the positional information of ownship
+    r : int
+        radial distance to intruder from ownship
+    hang, vang : float
+        horizontal and vertical angles to intruder from ownship
+    h : float
+        heading of intruder in degrees
+
+    Returns
+    -------
+    Aircraft
+        object storing positional information of intruder
+    """
+
     inclination = np.deg2rad(90-vang)
     azimuth = np.deg2rad(90-hang)
 
@@ -176,27 +175,6 @@ def sample_random_state():
 
     return ownship, intruder, vang, hang, dist
 
-def onMouseDown(event):
-    print(event)
-
-def trace_window(x, y, height, width):
-    move_time = 1
-    pyautogui.moveTo(x,y + 1,move_time)
-    pyautogui.moveTo(x,height,move_time)
-    pyautogui.moveTo(width,height,move_time)
-    pyautogui.moveTo(width,y + 1,move_time)
-    pyautogui.moveTo(x,y + 1,move_time)
-
-def get_window_dims():
-    width = client.getDREF("sim/graphics/view/window_width")[0]
-    height = client.getDREF("sim/graphics/view/window_height")[0]
-    trace_window(0,0,height, width)
-    while input("Is this the window you want captured? (Y/N): ") == "N":
-        tl_x = int(input("New top left x: "))
-        tl_y = int(input("New top left y: "))
-        trace_window(tl_x, tl_y, height, width)
-    return tl_x, tl_y
-
 def gen_data(client, outdir):
     """Generates dataset based on parameters in settings.py
 
@@ -206,43 +184,14 @@ def gen_data(client, outdir):
         XPlaneConnect socket
     """
 
-    '''
-    hwnd = client.getDREF("sim/operation/windows/system_window")[0]
-    rect = win32gui.GetWindowRect(hwnd)
-    desktop = win32gui.GetDesktopWindow()
-    dt_l, dt_t, dt_r, dt_b = win32gui.GetWindowRect(desktop)
-    #print(dir(win32gui))
-    #print(win32gui.GetWindowRgn(hwnd))
-    centre_x, centre_y = win32gui.ClientToScreen( desktop, ( (dt_r-dt_l)//2, (dt_b-dt_t)//2) )
-    rect = win32gui.GetClientRect(hwnd)
-    bbox = win32gui.GetClientRect(hwnd)
-    img = ImageGrab.grab(bbox)
-    img2 = pyautogui.screenshot()
-
-    win32clipboard.OpenClipboard()
-    pyautogui.hotkey('win', 'shift', 's')
-    time.sleep(5)
-    print(win32clipboard.GetClipboardData())
-
-    dc = win32gui.GetWindowDC(hwnd)
-    print(pyautogui.size())'''
-
-
-    #print(win32gui.GetRgnBox())
-    #print(dc)
-    #print(win32gui.GetWindowExtEx(dc))
-    #print(win32gui.GetClientRect(hwnd))
-    #print(client.getDREF("sim/graphics/view/window_width")[0])
-    #print(client.getDREF("sim/graphics/view/window_height")[0])
-
     screen_shot = mss.mss()
     ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
     sh, sw, _ = ss.shape
+    tl_y = 0
 
-    height = client.getDREF("sim/graphics/view/window_height")[0]
-    
-    tl_y = int(sh - height)
-    print(tl_y)
+    if os.name == "nt": 
+        height = client.getDREF("sim/graphics/view/window_height")[0]
+        tl_y = int(sh - height)
 
     csv_file = outdir + 'state_data.csv'
     image_dir = outdir + "train/images/"
@@ -274,45 +223,20 @@ def gen_data(client, outdir):
                      (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
 
 def run_data_generation(client, outdir):
+    """Begin data generation by calling gen_data"""
+
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
+    # Set starting position of ownship and intruder
     set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0))
     set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
 
+    # Pause to allow time for user to switch to XPlane window
     time.sleep(c.PAUSE_1)
 
+    # Begin
     gen_data(client, outdir)
-
-def make_yaml_file(outdir):
-    data = {
-        "train": f"{outdir}/train/images",
-        "val": f"{outdir}/valid/images",
-        "names": {0: "aircraft"}
-    }
-    with open(f'{outdir}data.yaml', 'w+') as out:
-        yaml.dump(data, out, default_flow_style=False, sort_keys=False)
-
-def prepare_files():
-    outdir = args.outdir + "data_" + str(time.time()) + "/"
-    args.outdir = outdir
-    os.makedirs(outdir)
-    os.makedirs(outdir + "train/images/")
-    os.makedirs(outdir + "valid/images/")
-    os.makedirs(outdir + "train/labels/")
-    os.makedirs(outdir + "valid/labels/")
-
-    make_yaml_file(outdir)
-
-    # set metadata
-    json_object = json.dumps(vars(args), indent=4)
-    with open(outdir + "metadata.json", "w") as outfile:
-        outfile.write(json_object)
-
-    csv_file = outdir + 'state_data.csv'
-    with open(csv_file, 'w+') as fd:
-        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
-    return outdir
 
 if __name__ == "__main__":
     client = XPlaneConnect()
@@ -327,12 +251,12 @@ if __name__ == "__main__":
     parser.add_argument("-de", "--dayend", dest = "dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=45.0, own_r_max=45.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_range=(20,500))
-    parser.set_defaults(num_train=5, num_valid=5)
+    parser.add_argument("-nt", "--train", dest = "num_train", default=5, help="Number of samples for training dataset", type=int)
+    parser.add_argument("-nv", "--valid", dest = "num_valid", default=5, help="Number of samples for validation dataset", type=int)
+    parser.add_argument("-dir", "--outdir", dest = "outdir", default="../datasets/", help="Directory where data folders are placed", type=str)
     parser.set_defaults(daw=20000)
-    parser.set_defaults(outdir="../datasets/")
 
     args = parser.parse_args()
-    outdir = prepare_files()
-    print(args)
+    outdir = prepare_files(args)
 
     run_data_generation(client, outdir)

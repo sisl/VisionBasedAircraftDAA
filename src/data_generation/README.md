@@ -13,7 +13,7 @@
 1. Open XPlane in full screen mode
 2. Toggle to View > Internal > Forward with No Display
 3. In the src folder, run `python3 -m data_generation.generate_traffic_data`
-4. Quickly toggle to have XPlane in the foreground and wait for the 10 images to be generated.
+4. Quickly toggle to have XPlane in the foreground and wait for the images to be generated.
 
 ## Checking the Bounding Boxes
 
@@ -22,4 +22,5 @@
 3. Run all cells and view results in the "View and Tune Bounding Boxes" section.
 
 ## Troubleshooting
+
 - **If screenshots are all of the same frame even though the XPlane simulator is updating positions properly:** Configure windowed simulator on XPlane by navigating to `Flight -> Flight Configuration -> Settings icon in upper right -> Graphics -> Monitor usage -> toggle to “Windowed Simulator”`

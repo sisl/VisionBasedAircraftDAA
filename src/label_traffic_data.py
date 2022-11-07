@@ -9,7 +9,6 @@ import pandas as pd
 import numpy as np
 import cv2
 import data_generation.settings as s
-import os
 from data_generation.generate_traffic_data import Aircraft
 import argparse
 import json

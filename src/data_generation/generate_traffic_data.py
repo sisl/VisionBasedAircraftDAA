@@ -12,6 +12,7 @@ import time
 import sys
 import argparse
 from data_generation.helpers import *
+from data_generation.label_traffic_data import run_labeling
 
 def set_position(client, aircraft):
     """Sets position of aircraft in XPlane
@@ -243,20 +244,23 @@ if __name__ == "__main__":
     print(sys.argv)
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-l", "--location", dest = "location", default = "Palo Alto", help="Airport Location", type=str)
-    parser.add_argument("-enr", "--enrange", dest = "enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
-    parser.add_argument("-ur", "--urange", dest = "urange", default=500.0, help="Distance in meters vertically from location", type=float)
-    parser.add_argument("-w", "--weather", dest = "weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
-    parser.add_argument("-ds", "--daystart", dest = "daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
-    parser.add_argument("-de", "--dayend", dest = "dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location", type=str)
+    parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
+    parser.add_argument("-ur", "--urange", dest="urange", default=500.0, help="Distance in meters vertically from location", type=float)
+    parser.add_argument("-w", "--weather", dest="weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
+    parser.add_argument("-ds", "--daystart", dest="daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
+    parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
+    parser.add_argument("-dir", "--outdir", dest="outdir", default="../datasets/", help="Directory where data folders are placed", type=str)
+    parser.add_argument('--label', help="Use this flag to run data generation and labeling with the same call", action=argparse.BooleanOptionalAction)
+
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=45.0, own_r_max=45.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_range=(20,500))
-    parser.add_argument("-nt", "--train", dest = "num_train", default=5, help="Number of samples for training dataset", type=int)
-    parser.add_argument("-nv", "--valid", dest = "num_valid", default=5, help="Number of samples for validation dataset", type=int)
-    parser.add_argument("-dir", "--outdir", dest = "outdir", default="../datasets/", help="Directory where data folders are placed", type=str)
     parser.set_defaults(daw=20000)
 
     args = parser.parse_args()
     outdir = prepare_files(args)
 
     run_data_generation(client, outdir)
+    if args.label: run_labeling(outdir)

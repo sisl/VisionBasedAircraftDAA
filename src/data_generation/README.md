@@ -12,7 +12,7 @@
 
 1. Open XPlane in full screen mode
 2. Toggle to View > Internal > Forward with No Display
-3. In the src folder, run `python3 -m data_generation.generate_traffic_data`
+3. In the src folder, run `python3 -m data_generation.generate_traffic_data --label`. (This will run both the data generation and labeling processes in sequence. If you run the same command without the `--label` flag, you can subsequently call `python3 -m data_generation.label_traffic_data` and enter the name of the dataset you would like to label when requested.)
 4. Quickly toggle to have XPlane in the foreground and wait for the images to be generated.
 
 ## Checking the Bounding Boxes

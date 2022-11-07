@@ -8,11 +8,9 @@
 import pandas as pd
 import numpy as np
 import cv2
-import data_generation.settings as s
-from data_generation.generate_traffic_data import Aircraft
+from data_generation.helpers import Aircraft
 import argparse
 import json
-
 
 def get_bb_size(o, i, aw0=0, daw=1):
     """Gets height and width of bounding box"""
@@ -20,16 +18,14 @@ def get_bb_size(o, i, aw0=0, daw=1):
     x = i.n - o.n
     y = -(i.e - o.e) # right-handed coordinates
     z = i.u - o.u
-    print(f"{x}, {y}, {z}")
     
     # Get height and width of bounding box
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     w = daw * (1 / r) + aw0
     h = (3 / 8) * w
-    print(f"{w}, {h}")
     return h, w
 
-def gen_labels(folder, metadata):
+def gen_labels(metadata):
     """Writes bounding box data in Yolo format
     
     Parameters
@@ -57,6 +53,15 @@ def gen_labels(folder, metadata):
         with open(file_name, 'w+') as fd:
             fd.write("0 %f %f %f %f\n" %
                      (xp  / sw, yp / sh, w / sw, h / sh))
+
+    print("Dataset folder: " + outdir)
+
+def run_labeling(outdir):
+    """Begin data labeling sequence"""
+    with open(outdir + "/metadata.json", "r") as metafile:
+        metadata = json.load(metafile)
+
+    gen_labels(metadata)
     
 if __name__ == "__main__":
     data_folder = input("Name of folder for data you would like to label: ")
@@ -65,7 +70,4 @@ if __name__ == "__main__":
     parser.set_defaults(outdir="../datasets/")
     args = parser.parse_args()
 
-    with open(args.outdir + data_folder + "/metadata.json", "r") as metafile:
-        metadata = json.load(metafile)
-
-    gen_labels(data_folder, metadata)
+    run_labeling(args.outdir + data_folder)

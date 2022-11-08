@@ -1,4 +1,3 @@
-import pyautogui
 import os
 import time
 import yaml
@@ -54,6 +53,7 @@ def prepare_files(args):
         fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
     return outdir
 
+'''
 # Window setup helpers
 def trace_window(x, y, height, width):
     """Trace XPlane window with mouse for demo purposes"""
@@ -75,4 +75,4 @@ def get_window_dims(client):
         tl_x = int(input("New top left x: "))
         tl_y = int(input("New top left y: "))
         trace_window(tl_x, tl_y, height, width)
-    return tl_x, tl_y
+    return tl_x, tl_y'''

@@ -1,6 +1,8 @@
 # Seconds to pause
 PAUSE_1 = 3 # before data generation
-PAUSE_2 = 0.5 # between each sample
+PAUSE_2 = 0.3 # between each sample
+
+PATH = "../datasets/"
 
 # Latitude, Longitiude, and Altitude of different region locations
 # about 1500m agl

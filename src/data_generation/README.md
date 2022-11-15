@@ -24,3 +24,4 @@
 ## Troubleshooting
 
 - **If screenshots are all of the same frame even though the XPlane simulator is updating positions properly:** Configure windowed simulator on XPlane by navigating to `Flight -> Flight Configuration -> Settings icon in upper right -> Graphics -> Monitor usage -> toggle to “Windowed Simulator”`
+- **If screenshots on MacOS are not capturing XPlane:** Go to System Preferences > Security & Privacy > Privacy > Screen Recording. Then make sure your IDE and/or Terminal are listed as allowed to take screen recordings on your device. 

@@ -2,6 +2,7 @@ import os
 import time
 import yaml
 import json
+import data_generation.constants as c
 
 class Aircraft:
     """Object for storing positional information for Aircrafts"""
@@ -23,56 +24,55 @@ def make_yaml_file(outdir):
     """Create yaml file for YOLO formatting"""
 
     data = {
-        "train": f"{outdir}/train/images",
-        "val": f"{outdir}/valid/images",
+        "train": os.path.join(outdir, "train", "images"),
+        "val": os.path.join(outdir, "valid", "images"),
         "names": {0: "aircraft"}
     }
-    with open(f'{outdir}data.yaml', 'w+') as out:
+    with open(os.path.join(outdir, "data.yaml"), 'w+') as out:
         yaml.dump(data, out, default_flow_style=False, sort_keys=False)
 
 def prepare_files(args):
     """Prepare file layout for YOLO formatting"""
 
-    outdir = args.outdir + "data_" + str(time.time()) + "/"
+    stamp = time.time()
+
+    if args.datasetname is None:
+        outdir = os.path.join(c.PATH, "data_" + str(stamp), "")
+    else: 
+        outdir = os.path.join(c.PATH, args.datasetname + "/")
+
+    if not args.append and os.path.exists(outdir):
+        raise ValueError(f"There is already a data folder with the name {args.datasetname}.")
+
     args.outdir = outdir
-    os.makedirs(outdir)
-    os.makedirs(outdir + "train/images/")
-    os.makedirs(outdir + "valid/images/")
-    os.makedirs(outdir + "train/labels/")
-    os.makedirs(outdir + "valid/labels/")
+     
+    if not args.append:
+        os.makedirs(outdir)
+        os.makedirs(os.path.join(outdir, "train", "images", ""))
+        os.makedirs(os.path.join(outdir, "valid", "images", ""))
+        os.makedirs(os.path.join(outdir, "train", "labels", ""))
+        os.makedirs(os.path.join(outdir, "valid", "labels", ""))
+        
+        csv_file = os.path.join(outdir, 'state_data.csv')
+
+        with open(csv_file, 'w+') as fd:
+            fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
 
     make_yaml_file(outdir)
 
     # set metadata
-    json_object = json.dumps(vars(args), indent=4)
-    with open(outdir + "metadata.json", "w") as outfile:
+    total_images = args.num_train + args.num_valid
+    if os.path.exists(os.path.join(outdir, "metadata.json")):
+        with open(os.path.join(outdir, "metadata.json"), "r") as metafile:
+            prev_data = json.load(metafile)
+        prev_data[float(stamp)] = vars(args)
+        metadata = prev_data        
+        metadata['total_images'] = metadata['total_images'] + total_images
+    else: 
+        metadata = {float(stamp): vars(args), 'total_images': total_images}
+
+    json_object = json.dumps(metadata, indent=4)
+    with open(os.path.join(outdir, "metadata.json"), "w") as outfile:
         outfile.write(json_object)
 
-    csv_file = outdir + 'state_data.csv'
-    with open(csv_file, 'w+') as fd:
-        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
-    return outdir
-
-'''
-# Window setup helpers
-def trace_window(x, y, height, width):
-    """Trace XPlane window with mouse for demo purposes"""
-
-    move_time = 1
-    pyautogui.moveTo(x,y + 1,move_time)
-    pyautogui.moveTo(x,height,move_time)
-    pyautogui.moveTo(width,height,move_time)
-    pyautogui.moveTo(width,y + 1,move_time)
-    pyautogui.moveTo(x,y + 1,move_time)
-
-def get_window_dims(client):
-    """Allow user to specify params for window location"""
-
-    width = client.getDREF("sim/graphics/view/window_width")[0]
-    height = client.getDREF("sim/graphics/view/window_height")[0]
-    trace_window(0,0,height, width)
-    while input("Is this the window you want captured? (Y/N): ") == "N":
-        tl_x = int(input("New top left x: "))
-        tl_y = int(input("New top left y: "))
-        trace_window(tl_x, tl_y, height, width)
-    return tl_x, tl_y'''
+    return outdir, metadata['total_images']

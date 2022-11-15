@@ -10,6 +10,7 @@ import time
 from scipy.stats import truncnorm
 import time
 import sys
+import os
 import argparse
 from data_generation.helpers import *
 from data_generation.label_traffic_data import run_labeling
@@ -32,12 +33,8 @@ def set_position(client, aircraft):
 def mult_matrix_vec(m, v):
     """4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions"""
 
-    dst = np.zeros(4)
-    dst[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12]
-    dst[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9] + v[3] * m[13]
-    dst[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + v[3] * m[14]
-    dst[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15]
-    return dst
+    m = np.reshape(m, (4, 4)).T
+    return np.matmul(m, v)
     
 def get_bb_coords(client, i, screen_h, screen_w):
     """Calculates coordinates of intruder bounding box
@@ -168,7 +165,9 @@ def sample_random_state():
     # Info about relative position of intruder
     vang = np.random.uniform(-args.vfov/2, args.vfov/2)  # degrees
     hang = np.random.uniform(-args.hfov/2, args.hfov/2)  # degrees
-    dist = np.random.uniform(args.radius_range[0], args.radius_range[1])  # meters
+    dist = np.random.gamma(args.radius_params[0], args.radius_params[1])  # meters
+    while dist < 20:
+        dist = np.random.gamma(args.radius_params[0], args.radius_params[1])
     
     # Intruder state
     h1 = np.random.uniform(args.intr_h[0], args.intr_h[1])  # degrees
@@ -176,15 +175,21 @@ def sample_random_state():
 
     return ownship, intruder, vang, hang, dist
 
-def gen_data(client, outdir):
+def gen_data(client, outdir, total_images):
     """Generates dataset based on parameters in settings.py
 
     Parameters
     ----------
     client : SocketKind.SOCK_DGRAM
         XPlaneConnect socket
+    outdir : str
+        path to directory where data is placed
+    total_images : int
+        number of images total in the dataset
     """
 
+    set_position(client, Aircraft(1, 0, 100, 0, 0, pitch=0, roll=0))
+    set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
     screen_shot = mss.mss()
     ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
     sh, sw, _ = ss.shape
@@ -194,10 +199,11 @@ def gen_data(client, outdir):
         height = client.getDREF("sim/graphics/view/window_height")[0]
         tl_y = int(sh - height)
 
-    csv_file = outdir + 'state_data.csv'
-    image_dir = outdir + "train/images/"
-    for i in range(args.num_train + args.num_valid):
-        if i == args.num_train: image_dir = outdir + "valid/images/"
+    csv_file = os.path.join(outdir, 'state_data.csv')
+    image_dir = os.path.join(outdir, "train", "images", "")
+
+    for i in range(total_images - args.num_train - args.num_valid, total_images):
+        if i == total_images - args.num_valid: image_dir = os.path.join(outdir, "valid", "images", "")
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 
@@ -223,7 +229,7 @@ def gen_data(client, outdir):
             fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
                      (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
 
-def run_data_generation(client, outdir):
+def run_data_generation(client, outdir, total_images):
     """Begin data generation by calling gen_data"""
 
     client.pauseSim(True)
@@ -237,14 +243,15 @@ def run_data_generation(client, outdir):
     time.sleep(c.PAUSE_1)
 
     # Begin
-    gen_data(client, outdir)
+    gen_data(client, outdir, total_images)
 
 if __name__ == "__main__":
     client = XPlaneConnect()
+    client.socket.settimeout(None)
     print(sys.argv)
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location", type=str)
+    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
     parser.add_argument("-ur", "--urange", dest="urange", default=500.0, help="Distance in meters vertically from location", type=float)
     parser.add_argument("-w", "--weather", dest="weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
@@ -252,15 +259,17 @@ if __name__ == "__main__":
     parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
     parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
-    parser.add_argument("-dir", "--outdir", dest="outdir", default="../datasets/", help="Directory where data folders are placed", type=str)
-    parser.add_argument('--label', help="Use this flag to run data generation and labeling with the same call", action=argparse.BooleanOptionalAction)
+    parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action=argparse.BooleanOptionalAction)
+    parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action=argparse.BooleanOptionalAction)
+    parser.add_argument("-name", "--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
 
-    parser.set_defaults(own_h=(0.0,360.0), own_p_max=45.0, own_r_max=45.0)
-    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_range=(20,500))
+    parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
+    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_params=(2,200))
     parser.set_defaults(daw=20000)
 
     args = parser.parse_args()
-    outdir = prepare_files(args)
+    outdir, total_images = prepare_files(args)
+    print(args)
 
-    run_data_generation(client, outdir)
+    run_data_generation(client, outdir, total_images)
     if args.label: run_labeling(outdir)

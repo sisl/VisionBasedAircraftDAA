@@ -188,8 +188,6 @@ def gen_data(client, outdir, total_images):
         number of images total in the dataset
     """
 
-    set_position(client, Aircraft(1, 0, 100, 0, 0, pitch=0, roll=0))
-    set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
     screen_shot = mss.mss()
     ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
     sh, sw, _ = ss.shape
@@ -198,6 +196,8 @@ def gen_data(client, outdir, total_images):
     if os.name == "nt": 
         height = client.getDREF("sim/graphics/view/window_height")[0]
         tl_y = int(sh - height)
+
+    time.sleep(c.PAUSE_2)
 
     csv_file = os.path.join(outdir, 'state_data.csv')
     image_dir = os.path.join(outdir, "train", "images", "")
@@ -260,8 +260,8 @@ if __name__ == "__main__":
     parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
     parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
-    parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action=argparse.BooleanOptionalAction)
-    parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action=argparse.BooleanOptionalAction)
+    parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action='store_true')
+    parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
     parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
     parser.add_argument("--daw", dest="daw", help="Specify daw value to determine bounding box size. (Cessna Skyhawk: 20000, Boeing 737-800: 100000, King Air C90: 40000)", required=True, default=20000)
 

@@ -1,5 +1,5 @@
 # Seconds to pause
-PAUSE_1 = 3 # before data generation
+PAUSE_1 = 20 # before data generation
 PAUSE_2 = 0.3 # between each sample
 
 PATH = "../datasets/"

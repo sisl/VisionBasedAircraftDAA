@@ -23,7 +23,7 @@ def get_bb_size(o, i, aw0=0, daw=1):
     
     # Get height and width of bounding box
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
-    w = daw * (1 / r) + aw0
+    w = float(daw) * (1 / r) + aw0
     h = (3 / 8) * w
     return h, w
 

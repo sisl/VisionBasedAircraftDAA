@@ -238,6 +238,7 @@ def run_data_generation(client, outdir, total_images):
     # Set starting position of ownship and intruder
     set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0))
     set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
+    client.sendVIEW(85)
 
     # Pause to allow time for user to switch to XPlane window
     time.sleep(c.PAUSE_1)
@@ -261,13 +262,15 @@ if __name__ == "__main__":
     parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
     parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action=argparse.BooleanOptionalAction)
     parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action=argparse.BooleanOptionalAction)
-    parser.add_argument("-name", "--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
+    parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
+    parser.add_argument("--daw", dest="daw", help="Specify daw value to determine bounding box size. (Cessna Skyhawk: 20000, Boeing 737-800: 100000, King Air C90: 40000)", required=True, default=20000)
 
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_params=(2,200))
-    parser.set_defaults(daw=20000)
 
     args = parser.parse_args()
+    client.sendVIEW(85)
+
     outdir, total_images = prepare_files(args)
     print(args)
 

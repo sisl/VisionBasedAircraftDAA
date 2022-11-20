@@ -41,6 +41,9 @@ def prepare_files(args):
     else: 
         outdir = os.path.join(c.PATH, args.datasetname + "/")
 
+    if args.append and args.datasetname is None:
+        raise ValueError(f"If you want to append to an existing dataset, the name of the dataset must be specified with the --name flag.")
+
     if not args.append and os.path.exists(outdir):
         raise ValueError(f"There is already a data folder with the name {args.datasetname}.")
 
@@ -52,7 +55,7 @@ def prepare_files(args):
         os.makedirs(os.path.join(outdir, "valid", "images", ""))
         os.makedirs(os.path.join(outdir, "train", "labels", ""))
         os.makedirs(os.path.join(outdir, "valid", "labels", ""))
-        
+
         csv_file = os.path.join(outdir, 'state_data.csv')
 
         with open(csv_file, 'w+') as fd:

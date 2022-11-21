@@ -1,0 +1,4 @@
+train: ../datasets/cessna/train\images
+val: ../datasets/cessna/valid\images
+names:
+  0: aircraft

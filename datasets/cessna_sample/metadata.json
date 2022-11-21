@@ -1,0 +1,127 @@
+{
+    "1668987216.0919802": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": false,
+        "datasetname": "cessna",
+        "daw": "20000",
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "radius_params": [
+            2,
+            200
+        ],
+        "outdir": "../datasets/cessna/"
+    },
+    "total_images": 40,
+    "1668987244.605693": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "cessna",
+        "daw": "20000",
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "radius_params": [
+            2,
+            200
+        ],
+        "outdir": "../datasets/cessna/"
+    },
+    "1668987270.9939058": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "cessna",
+        "daw": "20000",
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "radius_params": [
+            2,
+            200
+        ],
+        "outdir": "../datasets/cessna/"
+    },
+    "1668987302.9609723": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "cessna",
+        "daw": "20000",
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "radius_params": [
+            2,
+            200
+        ],
+        "outdir": "../datasets/cessna/"
+    }
+}

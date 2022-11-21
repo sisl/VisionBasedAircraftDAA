@@ -1,7 +1,7 @@
 # Dataset Generation Instructions
 
 ## TODO
-[] test on lab computers
+[x] test on lab computers
 [] make instructions for him on making test set and then the full dataset
 [] full documentation, docstrings 
 

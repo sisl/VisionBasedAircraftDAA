@@ -4,3 +4,4 @@ pandas
 matplotlib
 opencv-python
 pymap3d
+mss

@@ -45,6 +45,8 @@ def get_bb_coords(client, i, screen_h, screen_w):
         XPlaneConnect socket
     i : int
         id number of ownship intruder instantiation
+    screen_h, screen_w : int
+        height and width of screen in pixels
 
     Returns
     -------
@@ -72,10 +74,6 @@ def get_bb_coords(client, i, screen_h, screen_w):
     acf_ndc[0] *= acf_ndc[3]
     acf_ndc[1] *= acf_ndc[3]
     acf_ndc[2] *= acf_ndc[3]
-    
-    # Bizaar issue with these not retrieving the correct window size
-    #screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    #screen_h = client.getDREF("sim/graphics/view/window_height")[0]
 
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
@@ -247,11 +245,7 @@ def run_data_generation(client, outdir, total_images):
     gen_data(client, outdir, total_images)
 
 if __name__ == "__main__":
-    client = XPlaneConnect()
-    client.socket.settimeout(None)
-    print(sys.argv)
     parser = argparse.ArgumentParser()
-
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
     parser.add_argument("-ur", "--urange", dest="urange", default=500.0, help="Distance in meters vertically from location", type=float)
@@ -264,15 +258,17 @@ if __name__ == "__main__":
     parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
     parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
     parser.add_argument("--daw", dest="daw", help="Specify daw value to determine bounding box size. (Cessna Skyhawk: 20000, Boeing 737-800: 100000, King Air C90: 40000)", required=True, default=20000)
-
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_params=(2,200))
-
     args = parser.parse_args()
+
+    client = XPlaneConnect()
+    client.socket.settimeout(None)
+    version = client.getDREF("sim/version/xplane_internal_version")
+    if version <= 110000: raise RuntimeError("X-Plane version must be >11")
+
     client.sendVIEW(85)
 
     outdir, total_images = prepare_files(args)
-    print(args)
-
     run_data_generation(client, outdir, total_images)
     if args.label: run_labeling(outdir)

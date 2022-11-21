@@ -1,10 +1,3 @@
-# TODOs in order
-# DONE: generate YOLO format directly - one script that generates images, create folder structure, training and validation images, put state data in YOLO folder
-# DONE: command line args and then generate it as json file, shell scripts
-# DONE: constants.py file for the things that will never change
-# TODO; get it to a point where it's super clean and documented -- fully documented data generation python. docstrings for functions, removing old functions, detailed instructions in readme for a small dataset
-# TODO: auto cropping for images -- get screen coordinates from xplane? or screenshot window only?
-
 import pandas as pd
 import numpy as np
 import cv2
@@ -32,8 +25,9 @@ def gen_labels(metadata, total_images):
     
     Parameters
     ----------
-    outdir : str
-        The location of the csv file to which to save data
+    metadata : dict
+        contains metadata for the dataset
+    total_images : number of images in dataset
     """
 
     # Load in the positions
@@ -60,6 +54,7 @@ def gen_labels(metadata, total_images):
 
 def run_labeling(outdir):
     """Begin data labeling sequence"""
+
     with open(os.path.join(outdir, "metadata.json"), "r") as metafile:
         metadata = json.load(metafile)
 

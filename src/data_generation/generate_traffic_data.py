@@ -163,9 +163,9 @@ def sample_random_state():
     # Info about relative position of intruder
     vang = np.random.uniform(-args.vfov/2, args.vfov/2)  # degrees
     hang = np.random.uniform(-args.hfov/2, args.hfov/2)  # degrees
-    dist = np.random.gamma(args.radius_params[0], args.radius_params[1])  # meters
-    while dist < 20:
-        dist = np.random.gamma(args.radius_params[0], args.radius_params[1])
+    dist = np.random.gamma(c.DIST_PARAMS[args.ac][0], c.DIST_PARAMS[args.ac][1])  # meters
+    while dist < c.DIST_PARAMS[args.ac][2]:
+        dist = np.random.gamma(c.DIST_PARAMS[args.ac][0], c.DIST_PARAMS[args.ac][1])
     
     # Intruder state
     h1 = np.random.uniform(args.intr_h[0], args.intr_h[1])  # degrees
@@ -200,7 +200,12 @@ def gen_data(client, outdir, total_images):
     csv_file = os.path.join(outdir, 'state_data.csv')
     image_dir = os.path.join(outdir, "train", "images", "")
 
-    for i in range(total_images - args.num_train - args.num_valid, total_images):
+    begin = total_images - args.num_train - args.num_valid
+    i = begin
+
+    num_scratch = 2
+
+    while i < total_images:
         if i == total_images - args.num_valid: image_dir = os.path.join(outdir, "valid", "images", "")
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
@@ -218,14 +223,19 @@ def gen_data(client, outdir, total_images):
         sh, sw, _ = ss.shape
         x_pos, y_pos = get_bb_coords(client, i, sh, sw)
 
+        if num_scratch > 0:
+            num_scratch -= 1
+            continue
+
         # Write the screenshot to a file
         print(f"{image_dir}{i}.jpg")
         cv2.imwrite(f"{image_dir}{i}.jpg", ss)
-        
+            
         # Write to csv file
         with open(csv_file, 'a') as fd:
-            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
-                     (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
+            fd.write(f"{i}, {ownship.e}, {ownship.n}, {ownship.u}, {ownship.h}, {ownship.p}, {ownship.r}, {vang}, {hang}, {z}, {intruder.e}, {intruder.n}, {intruder.u}, {intruder.h}, {x_pos}, {y_pos}, {args.location}, {args.ac}\n")
+
+        i += 1
 
 def run_data_generation(client, outdir, total_images):
     """Begin data generation by calling gen_data"""
@@ -244,7 +254,7 @@ def run_data_generation(client, outdir, total_images):
     # Begin
     gen_data(client, outdir, total_images)
 
-if __name__ == "__main__":
+def main(): 
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
@@ -257,14 +267,19 @@ if __name__ == "__main__":
     parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action='store_true')
     parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
     parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
-    parser.add_argument("--daw", dest="daw", help="Specify daw value to determine bounding box size. (Cessna Skyhawk: 20000, Boeing 737-800: 100000, King Air C90: 40000)", required=True, default=20000)
+    parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type", required=True)
+    parser.add_argument("--newac", dest="newac", help="Use this flag to indicate that a new aircraft is being used in this instance.", action='store_true')
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
-    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0, radius_params=(2,200))
+    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0)
     args = parser.parse_args()
+
+    if args.newac:
+        ready = input(f"Enter 'y' once you have adjusted the intruder aircraft to a {args.ac}.\n")
+        assert ready == 'y'
 
     client = XPlaneConnect()
     client.socket.settimeout(None)
-    version = client.getDREF("sim/version/xplane_internal_version")
+    version = client.getDREF("sim/version/xplane_internal_version")[0]
     if version <= 110000: raise RuntimeError("X-Plane version must be >11")
 
     client.sendVIEW(85)
@@ -272,3 +287,6 @@ if __name__ == "__main__":
     outdir, total_images = prepare_files(args)
     run_data_generation(client, outdir, total_images)
     if args.label: run_labeling(outdir)
+
+if __name__ == "__main__":
+    main()

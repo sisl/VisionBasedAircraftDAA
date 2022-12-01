@@ -59,7 +59,7 @@ def prepare_files(args):
         csv_file = os.path.join(outdir, 'state_data.csv')
 
         with open(csv_file, 'w+') as fd:
-            fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
+            fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y,loc,ac\n")
 
     make_yaml_file(outdir)
 

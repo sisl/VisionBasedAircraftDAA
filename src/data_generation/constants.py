@@ -28,3 +28,16 @@ TIME_OPTIONS = {
     "Osh Kosh": 5,
     "Reno Tahoe": 8
 }
+
+DAW_OPTIONS = {
+    "Cessna Skyhawk": 20000, 
+    "Boeing 737-800": 100000, 
+    "King Air C90": 40000
+}
+
+# (alpha, beta, min)
+DIST_PARAMS = {
+    "Cessna Skyhawk": (2, 200, 20), 
+    "Boeing 737-800": (3, 200, 50), 
+    "King Air C90": (2, 200, 20)
+}

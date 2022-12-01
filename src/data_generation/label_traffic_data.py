@@ -43,7 +43,8 @@ def gen_labels(metadata, total_images):
         own = Aircraft(0, xp_data['e0'], xp_data['n0'], xp_data['u0'], xp_data['h0'])
         intr = Aircraft(0, xp_data['e1'], xp_data['n1'], xp_data['u1'], xp_data['h1'])
         xp, yp = xp_data['intr_x'], xp_data['intr_y']
-        h, w = get_bb_size(own, intr, daw=metadata['daw'])
+        daw = c.DAW_OPTIONS[metadata['ac']]
+        h, w = get_bb_size(own, intr, daw=daw)
 
         file_name = curr_dir + "labels/" + str(i) + ".txt"
         with open(file_name, 'w+') as fd:

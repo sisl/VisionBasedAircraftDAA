@@ -18,7 +18,7 @@
 6. In the Edit menu, select one of the following aircrafts: Boeing 737-800, Cessna Skyhawk, or King Air C90. Then click "Done." 
 7. In the bottom right corner, select "Start Flight" and wait for the scene to appear. 
 
-## Generating the Dataset
+## General Instructions for Generating a Dataset
 
 1. If using MacOS, open run.sh. If using Windows OS, open run.ps1. In these files, there are pre-set calls to generate and label the dataset. This will run the scripts 4 times to generate the dataset for each of the four location options listed. The main things that will need to be adjusted are the `--daw` and `--name` flags. Be sure to adjust these flags for each of the four commands. Run `python3 -m data_generation.generate_traffic_data --help` to see the meaning of each flag.
 2. Adjust the `--daw` flag to match the current state of the intruder aircraft. There are values specified in the help text for this flag to indicate which value should be used for each aircraft type.
@@ -26,6 +26,11 @@
 4. Adjust any other flags as desired. (Other likely ones are the `-nt` and `-nv` flags)
 5. From the src folder, run the appropriate shell script file (e.g. `./run.sh`)
 6. Quickly toggle to have XPlane in the foreground and wait for the images to be generated.
+
+## Specific Instructions for Dataset Generation for Anthony
+1. Follow the setup instructions above to create a flight with a Cessna Skyhawk intruder. 
+2. From the src folder, run the test shell script currently in the "run" files (e.g. `./run.sh` for MacOS or `.\run.ps1` on Windows). Use the "Checking the Bounding Boxes" instructions below to verify that the bounding boxes look correct. 
+3. In the appropriate script file (run.sh if on Mac or run.ps1 for Windows), 
 
 ## Checking the Bounding Boxes
 

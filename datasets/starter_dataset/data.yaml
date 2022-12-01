@@ -1,0 +1,4 @@
+train: ../datasets/starter_dataset/train/images
+val: ../datasets/starter_dataset/valid/images
+names:
+  0: aircraft

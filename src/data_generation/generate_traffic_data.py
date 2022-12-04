@@ -132,7 +132,12 @@ def get_intruder_position(ownship, r, hang, vang, h):
     intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
     intruder = np.matmul(rot_matrix('z', -1*ownship.h), intruder)
     intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
-    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
+
+    # Random pitch and roll
+    p1 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=10) # degrees
+    r1 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
+
+    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h, pitch=p1, roll=r1)
 
     return intruder_obj 
 
@@ -200,6 +205,13 @@ def gen_data(client, outdir, total_images):
     csv_file = os.path.join(outdir, 'state_data.csv')
     image_dir = os.path.join(outdir, "train", "images", "")
 
+    '''images_sofar = [int(x[:-4]) for x in list(os.listdir(image_dir))]
+    print (os.listdir(image_dir))
+    if not images_sofar:
+        begin = 0
+    else:
+        begin = max(images_sofar) + 1'''
+
     begin = total_images - args.num_train - args.num_valid
     i = begin
 
@@ -210,10 +222,13 @@ def gen_data(client, outdir, total_images):
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 
-        # Position the aircraft
-        zulu_time = c.TIME_OPTIONS[args.location] * 3600
-        zulu_time += np.random.uniform(args.daystart * 3600, args.dayend * 3600)
+        # Set time
+        local_time = np.random.uniform(args.daystart * 3600, args.dayend * 3600)
+        zulu_time = local_time + (c.TIME_OPTIONS[args.location] * 3600)
         client.sendDREF("sim/time/zulu_time_sec", zulu_time)
+        client.sendDREF("sim/time/local_date_days", 0)
+
+        # Position aircrafts
         set_position(client, ownship)
         set_position(client, intruder)
 
@@ -233,7 +248,7 @@ def gen_data(client, outdir, total_images):
             
         # Write to csv file
         with open(csv_file, 'a') as fd:
-            fd.write(f"{i}, {ownship.e}, {ownship.n}, {ownship.u}, {ownship.h}, {ownship.p}, {ownship.r}, {vang}, {hang}, {z}, {intruder.e}, {intruder.n}, {intruder.u}, {intruder.h}, {x_pos}, {y_pos}, {args.location}, {args.ac}\n")
+            fd.write(f"{i}, {ownship.e}, {ownship.n}, {ownship.u}, {ownship.h}, {ownship.p}, {ownship.r}, {vang}, {hang}, {z}, {intruder.e}, {intruder.n}, {intruder.u}, {intruder.h}, {intruder.p}, {intruder.r}, {x_pos}, {y_pos}, {args.location}, {args.ac}, {args.weather}, {local_time}\n")
 
         i += 1
 
@@ -253,13 +268,14 @@ def run_data_generation(client, outdir, total_images):
 
     # Begin
     gen_data(client, outdir, total_images)
+    
 
 def main(): 
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
     parser.add_argument("-ur", "--urange", dest="urange", default=500.0, help="Distance in meters vertically from location", type=float)
-    parser.add_argument("-w", "--weather", dest="weather", default = 4, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
+    parser.add_argument("-w", "--weather", dest="weather", default = None, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
     parser.add_argument("-ds", "--daystart", dest="daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
@@ -268,9 +284,11 @@ def main():
     parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
     parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
     parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type", required=True)
+    parser.add_argument("-aw", "--allweather", dest="allweather", help="Use this flag to run this command for every weather type", action='store_true')
     parser.add_argument("--newac", dest="newac", help="Use this flag to indicate that a new aircraft is being used in this instance.", action='store_true')
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0)
+    global args
     args = parser.parse_args()
 
     if args.newac:
@@ -281,12 +299,29 @@ def main():
     client.socket.settimeout(None)
     version = client.getDREF("sim/version/xplane_internal_version")[0]
     if version <= 110000: raise RuntimeError("X-Plane version must be >11")
-
     client.sendVIEW(85)
 
-    outdir, total_images = prepare_files(args)
-    run_data_generation(client, outdir, total_images)
-    if args.label: run_labeling(outdir)
+    if args.weather is not None:
+        cloud0 = args.weather
+        client.sendDREF("sim/weather/cloud_type[0]", cloud0)
+
+    if args.allweather:
+        if args.datasetname is None:
+            stamp = time.time()
+            foldername = "data_" + str(stamp)
+            args.datasetname = foldername
+
+        for w in range(6):
+            client.sendDREF("sim/weather/cloud_type[0]", w)
+            args.weather = w
+            outdir, total_images = prepare_files(args)
+            run_data_generation(client, outdir, total_images)
+            if args.label: run_labeling(outdir)
+            args.append = True
+    else:
+        outdir, total_images = prepare_files(args)
+        run_data_generation(client, outdir, total_images)
+        if args.label: run_labeling(outdir)
 
 if __name__ == "__main__":
     main()

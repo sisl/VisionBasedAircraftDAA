@@ -31,7 +31,7 @@
         ],
         "outdir": "../datasets/starter_dataset/"
     },
-    "total_images": 160,
+    "total_images": 540,
     "1669838945.601325": {
         "location": "Osh Kosh",
         "enrange": 5000.0,
@@ -254,6 +254,557 @@
             2,
             200
         ],
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "160.179": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "180.199": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "200.219": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "220.239": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "240.259": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "260.279": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "280.299": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "300.319": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "320.339": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "340.359": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "360.379": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "380.399": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "400.419": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "420.439": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "440.459": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "460.479": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "480.499": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "500.519": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/starter_dataset/"
+    },
+    "520.539": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 15,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "starter_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
         "outdir": "../datasets/starter_dataset/"
     }
 }

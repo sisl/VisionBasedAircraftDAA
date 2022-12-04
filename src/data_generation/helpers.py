@@ -3,6 +3,7 @@ import time
 import yaml
 import json
 import data_generation.constants as c
+import sys
 
 class Aircraft:
     """Object for storing positional information for Aircrafts"""
@@ -45,7 +46,7 @@ def prepare_files(args):
         raise ValueError(f"If you want to append to an existing dataset, the name of the dataset must be specified with the --name flag.")
 
     if not args.append and os.path.exists(outdir):
-        raise ValueError(f"There is already a data folder with the name {args.datasetname}.")
+        raise RuntimeError(f"There is already a data folder with the name {args.datasetname}.")
 
     args.outdir = outdir
      
@@ -59,7 +60,7 @@ def prepare_files(args):
         csv_file = os.path.join(outdir, 'state_data.csv')
 
         with open(csv_file, 'w+') as fd:
-            fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y,loc,ac\n")
+            fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,p1,r1,intr_x,intr_y,loc,ac,clouds,local_time_sec\n")
 
     make_yaml_file(outdir)
 
@@ -68,11 +69,14 @@ def prepare_files(args):
     if os.path.exists(os.path.join(outdir, "metadata.json")):
         with open(os.path.join(outdir, "metadata.json"), "r") as metafile:
             prev_data = json.load(metafile)
-        prev_data[float(stamp)] = vars(args)
+        curr_range = str(prev_data['total_images']) + "." + str(prev_data['total_images'] + total_images - 1)
+        curr_range = float(curr_range)
+        prev_data[curr_range] = vars(args)
         metadata = prev_data        
         metadata['total_images'] = metadata['total_images'] + total_images
     else: 
-        metadata = {float(stamp): vars(args), 'total_images': total_images}
+        curr_range = str(0) + "." + str(total_images - 1)
+        metadata = {float(curr_range): vars(args), 'total_images': total_images}
 
     json_object = json.dumps(metadata, indent=4)
     with open(os.path.join(outdir, "metadata.json"), "w") as outfile:

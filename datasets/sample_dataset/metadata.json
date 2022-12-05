@@ -1,0 +1,2091 @@
+{
+    "0.9": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": false,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "total_images": 720,
+    "10.19": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "20.29": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "30.39": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "40.49": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "50.59": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "60.69": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "70.79": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "80.89": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "90.99": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "100.109": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "110.119": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "120.129": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "130.139": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "140.149": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "150.159": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "160.169": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "170.179": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "180.189": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "190.199": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "200.209": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "210.219": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "220.229": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "230.239": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "240.249": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "250.259": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "260.269": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "270.279": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "280.289": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "290.299": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "300.309": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "310.319": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "320.329": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "330.339": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "340.349": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "350.359": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "360.369": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "370.379": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "380.389": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "390.399": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "400.409": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "410.419": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "420.429": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "430.439": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "440.449": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "450.459": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "460.469": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "470.479": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "Boeing 737-800",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "480.489": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "490.499": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "500.509": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "510.519": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "520.529": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "530.539": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "540.549": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "550.559": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "560.569": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "570.579": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "580.589": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "590.599": {
+        "location": "Osh Kosh",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "600.609": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "610.619": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "620.629": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "630.639": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "640.649": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "650.659": {
+        "location": "Boston",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "660.669": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "670.679": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "680.689": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "690.699": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "700.709": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    },
+    "710.719": {
+        "location": "Reno Tahoe",
+        "enrange": 5000.0,
+        "urange": 500.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 9,
+        "num_valid": 1,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_dataset",
+        "ac": "King Air C90",
+        "allweather": true,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 60.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_dataset/"
+    }
+}

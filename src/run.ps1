@@ -5,11 +5,11 @@ cd src
 #>
 
 #<#CessnaSkyhawk
-python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Palo Alto" --label --name "starter_dataset2" -ac "Cessna Skyhawk" --newac
+python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Palo Alto" --label --name "starter_dataset" -ac "Cessna Skyhawk" --newac
 if ( $? ) {
-    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Osh Kosh" --label --name "starter_dataset2" -ac "Cessna Skyhawk" --append
-    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Boston" --label --name "starter_dataset2" -ac "Cessna Skyhawk" --append
-    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Reno Tahoe" --label --name "starter_dataset2" -ac "Cessna Skyhawk" --append
+    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Osh Kosh" --label --name "starter_dataset" -ac "Cessna Skyhawk" --append
+    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Boston" --label --name "starter_dataset" -ac "Cessna Skyhawk" --append
+    python -m data_generation.generate_traffic_data -aw --train 9 --valid 1 --location "Reno Tahoe" --label --name "starter_dataset" -ac "Cessna Skyhawk" --append
 }
 ##>
 

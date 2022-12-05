@@ -1,4 +1,0 @@
-train: ../datasets/data_1667774907.6464179//train/images
-val: ../datasets/data_1667774907.6464179//valid/images
-names:
-  0: aircraft

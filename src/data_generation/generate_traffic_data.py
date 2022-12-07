@@ -134,7 +134,7 @@ def get_intruder_position(ownship, r, hang, vang, h):
     intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
 
     # Random pitch and roll
-    p1 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=10) # degrees
+    p1 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=5) # degrees
     r1 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
 
     intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h, pitch=p1, roll=r1)
@@ -161,7 +161,7 @@ def sample_random_state():
     n0 = np.random.uniform(-args.enrange, args.enrange)  # meters
     u0 = np.random.uniform(-args.urange, args.urange)  # meters
     h0 = np.random.uniform(args.own_h[0], args.own_h[1])  # degrees
-    p0 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=10) # degrees
+    p0 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=5) # degrees
     r0 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
     ownship = Aircraft(0, e0, n0, u0, h0, p0, r0)
 
@@ -274,7 +274,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
-    parser.add_argument("-ur", "--urange", dest="urange", default=500.0, help="Distance in meters vertically from location", type=float)
+    parser.add_argument("-ur", "--urange", dest="urange", default=1000.0, help="Distance in meters vertically from location", type=float)
     parser.add_argument("-w", "--weather", dest="weather", default = None, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
     parser.add_argument("-ds", "--daystart", dest="daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
@@ -286,7 +286,7 @@ def main():
     parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type", required=True)
     parser.add_argument("-aw", "--allweather", dest="allweather", help="Use this flag to run this command for every weather type", action='store_true')
     parser.add_argument("--newac", dest="newac", help="Use this flag to indicate that a new aircraft is being used in this instance.", action='store_true')
-    parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=60.0)
+    parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=45.0)
     parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0)
     global args
     args = parser.parse_args()
@@ -300,6 +300,11 @@ def main():
     version = client.getDREF("sim/version/xplane_internal_version")[0]
     if version <= 110000: raise RuntimeError("X-Plane version must be >11")
     client.sendVIEW(85)
+
+    client.sendDREF("sim/weather/cloud_type[1]", 0)
+    client.sendDREF("sim/weather/cloud_type[2]", 0)
+    client.sendDREF("sim/weather/cloud_base_msl_m[0]", 4572) # lowest clouds at about 15000ft
+    client.sendDREF("sim/weather/cloud_tops_msl_m[0]", 5182) # upper end of clouds at about 17000ft
 
     if args.weather is not None:
         cloud0 = args.weather

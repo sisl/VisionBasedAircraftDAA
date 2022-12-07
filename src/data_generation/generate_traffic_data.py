@@ -1,33 +1,19 @@
 import mss
 import cv2
 import pymap3d as pm
-import json
 
 from xpc3 import *
 from xpc3_helper import *
-import data_generation.settings as s
-from PIL import Image
+import data_generation.constants as c
 import numpy as np
 import time
-import matplotlib.pyplot as plt
 from scipy.stats import truncnorm
 import time
+import sys
 import os
-
-
-class Aircraft:
-    def __init__(self, ac_num, east, north, up, heading, pitch=-998, roll=-998):
-        self.id = ac_num
-        self.e = east
-        self.n = north
-        self.u = up
-        self.h = heading
-        self.p = pitch
-        self.r = roll
-    
-    def __str__(self):
-        out = "Craft: %.2f, East: %.2f, North: %.2f, Up: %.2f, Heading: %.2f, Pitch: %.2f, Roll: %.2f" % (self.id, self.e, self.n, self.u, self.h, self.p, self.r)
-        return out
+import argparse
+from data_generation.helpers import *
+from data_generation.label_traffic_data import run_labeling
 
 def set_position(client, aircraft):
     """Sets position of aircraft in XPlane
@@ -39,18 +25,16 @@ def set_position(client, aircraft):
     aircraft : Aircraft
         object containing details about craft's position
     """
-    ref = s.REGION_OPTIONS[s.REGION_CHOICE]
+
+    ref = c.REGION_OPTIONS[args.location]
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
 def mult_matrix_vec(m, v):
     """4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions"""
-    dst = np.zeros(4)
-    dst[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[8] + v[3] * m[12]
-    dst[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[9] + v[3] * m[13]
-    dst[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + v[3] * m[14]
-    dst[3] = v[0] * m[3] + v[1] * m[7] + v[2] * m[11] + v[3] * m[15]
-    return dst
+
+    m = np.reshape(m, (4, 4)).T
+    return np.matmul(m, v)
     
 def get_bb_coords(client, i, screen_h, screen_w):
     """Calculates coordinates of intruder bounding box
@@ -61,6 +45,8 @@ def get_bb_coords(client, i, screen_h, screen_w):
         XPlaneConnect socket
     i : int
         id number of ownship intruder instantiation
+    screen_h, screen_w : int
+        height and width of screen in pixels
 
     Returns
     -------
@@ -88,10 +74,6 @@ def get_bb_coords(client, i, screen_h, screen_w):
     acf_ndc[0] *= acf_ndc[3]
     acf_ndc[1] *= acf_ndc[3]
     acf_ndc[2] *= acf_ndc[3]
-    
-    # Bizaar issue with these not retrieving the correct window size
-    # screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    # screen_h = client.getDREF("sim/graphics/view/window_height")[0]
 
     final_x = screen_w * (acf_ndc[0] * 0.5 + 0.5)
     final_y = screen_h * (acf_ndc[1] * 0.5 + 0.5)
@@ -99,6 +81,8 @@ def get_bb_coords(client, i, screen_h, screen_w):
     return final_x, screen_h - final_y
 
 def rot_matrix(axis, theta):
+    """Returns the rotation matrix for a given theta about a give access"""
+
     theta = np.deg2rad(theta)
     if axis == 'x':
         return np.matrix([[ 1, 0           , 0           ],
@@ -115,6 +99,25 @@ def rot_matrix(axis, theta):
     return None
 
 def get_intruder_position(ownship, r, hang, vang, h):
+    """Get position of intrudor according to ownship and parameters
+    
+    Parameters
+    ----------
+    ownship : Aircraft
+        object storing the positional information of ownship
+    r : int
+        radial distance to intruder from ownship
+    hang, vang : float
+        horizontal and vertical angles to intruder from ownship
+    h : float
+        heading of intruder in degrees
+
+    Returns
+    -------
+    Aircraft
+        object storing positional information of intruder
+    """
+
     inclination = np.deg2rad(90-vang)
     azimuth = np.deg2rad(90-hang)
 
@@ -129,7 +132,12 @@ def get_intruder_position(ownship, r, hang, vang, h):
     intruder = np.matmul(rot_matrix('x', ownship.p), intruder)
     intruder = np.matmul(rot_matrix('z', -1*ownship.h), intruder)
     intruder += np.array([ownship.e, ownship.n, ownship.u]).reshape(-1, 1)
-    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h)
+
+    # Random pitch and roll
+    p1 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=5) # degrees
+    r1 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
+
+    intruder_obj = Aircraft(1, float(intruder[0]), float(intruder[1]), float(intruder[2]), h, pitch=p1, roll=r1)
 
     return intruder_obj 
 
@@ -149,151 +157,176 @@ def sample_random_state():
     """
 
     # Ownship state
-    e0 = np.random.uniform(-s.EAST_RANGE, s.EAST_RANGE)  # meters
-    n0 = np.random.uniform(-s.NORTH_RANGE, s.NORTH_RANGE)  # meters
-    u0 = np.random.uniform(-s.UP_RANGE, s.UP_RANGE)  # meters
-    h0 = np.random.uniform(s.OWNSHIP_HEADING[0], s.OWNSHIP_HEADING[1])  # degrees
-    p0 = truncnorm.rvs(s.PITCH_RANGE[0], s.PITCH_RANGE[1], loc=0, scale=10) # degrees
-    r0 = truncnorm.rvs(s.ROLL_RANGE[0], s.ROLL_RANGE[1], loc=0, scale=10) # degrees
+    e0 = np.random.uniform(-args.enrange, args.enrange)  # meters
+    n0 = np.random.uniform(-args.enrange, args.enrange)  # meters
+    u0 = np.random.uniform(-args.urange, args.urange)  # meters
+    h0 = np.random.uniform(args.own_h[0], args.own_h[1])  # degrees
+    p0 = truncnorm.rvs(-args.own_p_max, args.own_p_max, loc=0, scale=5) # degrees
+    r0 = truncnorm.rvs(-args.own_r_max, args.own_r_max, loc=0, scale=10) # degrees
     ownship = Aircraft(0, e0, n0, u0, h0, p0, r0)
 
     # Info about relative position of intruder
-    vang = np.random.uniform(s.VANG_RANGE[0], s.VANG_RANGE[1])  # degrees
-    hang = np.random.uniform(s.HANG_RANGE[0], s.HANG_RANGE[1])  # degrees
-    dist = np.random.uniform(s.DIST_RANGE[0], s.DIST_RANGE[1])  # meters
+    vang = np.random.uniform(-args.vfov/2, args.vfov/2)  # degrees
+    hang = np.random.uniform(-args.hfov/2, args.hfov/2)  # degrees
+    dist = np.random.gamma(c.DIST_PARAMS[args.ac][0], c.DIST_PARAMS[args.ac][1])  # meters
+    while dist < c.DIST_PARAMS[args.ac][2]:
+        dist = np.random.gamma(c.DIST_PARAMS[args.ac][0], c.DIST_PARAMS[args.ac][1])
     
     # Intruder state
-    h1 = np.random.uniform(s.INTRUDER_HEADING[0], s.INTRUDER_HEADING[1])  # degrees
+    h1 = np.random.uniform(args.intr_h[0], args.intr_h[1])  # degrees
     intruder = get_intruder_position(ownship, dist, hang, vang, h1)
 
     return ownship, intruder, vang, hang, dist
 
-def gen_data(client):
+def gen_data(client, outdir, total_images):
     """Generates dataset based on parameters in settings.py
 
     Parameters
     ----------
     client : SocketKind.SOCK_DGRAM
         XPlaneConnect socket
+    outdir : str
+        path to directory where data is placed
+    total_images : int
+        number of images total in the dataset
     """
 
     screen_shot = mss.mss()
-    outdir = s.OUTDIR + "data_" + str(time.time()) + "/"
-    os.makedirs(outdir)
-    os.makedirs(outdir + "imgs/")
-    csv_file = outdir + 'state_data.csv'
-    with open(csv_file, 'w+') as fd:
-        fd.write("filename,e0,n0,u0,h0,p0,r0,vang,hang,z,e1,n1,u1,h1,intr_x,intr_y\n")
+    ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
+    sh, sw, _ = ss.shape
+    tl_y = 0
 
-    for i in range(s.NUM_SAMPLES):
+    if os.name == "nt": 
+        height = client.getDREF("sim/graphics/view/window_height")[0]
+        tl_y = int(sh - height)
+
+    time.sleep(c.PAUSE_2)
+
+    csv_file = os.path.join(outdir, 'state_data.csv')
+    image_dir = os.path.join(outdir, "train", "images", "")
+
+    '''images_sofar = [int(x[:-4]) for x in list(os.listdir(image_dir))]
+    print (os.listdir(image_dir))
+    if not images_sofar:
+        begin = 0
+    else:
+        begin = max(images_sofar) + 1'''
+
+    begin = total_images - args.num_train - args.num_valid
+    i = begin
+
+    num_scratch = 2
+
+    while i < total_images:
+        if i == total_images - args.num_valid: image_dir = os.path.join(outdir, "valid", "images", "")
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 
-        # Position the aircraft
-        zulu_time = s.TIME_OPTIONS[s.REGION_CHOICE] * 3600
-        zulu_time += np.random.uniform(s.TIME_OF_DAY_START * 3600, s.TIME_OF_DAY_END * 3600)
+        # Set time
+        local_time = np.random.uniform(args.daystart * 3600, args.dayend * 3600)
+        zulu_time = local_time + (c.TIME_OPTIONS[args.location] * 3600)
         client.sendDREF("sim/time/zulu_time_sec", zulu_time)
+        client.sendDREF("sim/time/local_date_days", 0)
+
+        # Position aircrafts
         set_position(client, ownship)
         set_position(client, intruder)
 
         # Pause and then take the screenshot
-        time.sleep(s.PAUSE_2)
-        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :]
+        time.sleep(c.PAUSE_2)
+        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[tl_y:, :, :]
         sh, sw, _ = ss.shape
         x_pos, y_pos = get_bb_coords(client, i, sh, sw)
 
+        if num_scratch > 0:
+            num_scratch -= 1
+            continue
+
         # Write the screenshot to a file
-        print('%simgs/%d.jpg' % (outdir, i))
-        cv2.imwrite('%simgs/%d.jpg' % (outdir, i), ss)
-        
+        print(f"{image_dir}{i}.jpg")
+        cv2.imwrite(f"{image_dir}{i}.jpg", ss)
+            
         # Write to csv file
         with open(csv_file, 'a') as fd:
-            fd.write("%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n" %
-                     (i, ownship.e, ownship.n, ownship.u, ownship.h, ownship.p, ownship.r, vang, hang, z, intruder.e, intruder.n, intruder.u, intruder.h, x_pos, y_pos))
+            fd.write(f"{i}, {ownship.e}, {ownship.n}, {ownship.u}, {ownship.h}, {ownship.p}, {ownship.r}, {vang}, {hang}, {z}, {intruder.e}, {intruder.n}, {intruder.u}, {intruder.h}, {intruder.p}, {intruder.r}, {x_pos}, {y_pos}, {args.location}, {args.ac}, {args.weather}, {local_time}\n")
 
-def run_data_generation(client):
+        i += 1
+
+def run_data_generation(client, outdir, total_images):
+    """Begin data generation by calling gen_data"""
+
     client.pauseSim(True)
     client.sendDREF("sim/operation/override/override_joystick", 1)
 
-    set_position(client, Aircraft(1, 0, 0, 0, 0, pitch=0, roll=0))
+    # Set starting position of ownship and intruder
+    set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0))
     set_position(client, Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0))
+    client.sendVIEW(85)
 
-    time.sleep(s.PAUSE_1)
+    # Pause to allow time for user to switch to XPlane window
+    time.sleep(c.PAUSE_1)
 
-    gen_data(client)
+    # Begin
+    gen_data(client, outdir, total_images)
+    
 
-def set_metadata(client):
-    hfov = client.getDREF("sim/graphics/view/field_of_view_deg")[0]
-    vfov = client.getDREF("sim/graphics/view/vertical_field_of_view_deg")[0]
-    screen_w = client.getDREF("sim/graphics/view/window_width")[0]
-    screen_h = client.getDREF("sim/graphics/view/window_height")[0]
+def main(): 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
+    parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
+    parser.add_argument("-ur", "--urange", dest="urange", default=1000.0, help="Distance in meters vertically from location", type=float)
+    parser.add_argument("-w", "--weather", dest="weather", default = None, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
+    parser.add_argument("-ds", "--daystart", dest="daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
+    parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
+    parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action='store_true')
+    parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
+    parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
+    parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type", required=True)
+    parser.add_argument("-aw", "--allweather", dest="allweather", help="Use this flag to run this command for every weather type", action='store_true')
+    parser.add_argument("--newac", dest="newac", help="Use this flag to indicate that a new aircraft is being used in this instance.", action='store_true')
+    parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=45.0)
+    parser.set_defaults(intr_h=(0.0,360.0), vfov=40.0, hfov=50.0)
+    global args
+    args = parser.parse_args()
 
-    data = {
-        "hfov": hfov,
-        "vfov": vfov,
-        "screen_w": screen_w,
-        "screen_h": screen_h
-    }
+    if args.newac:
+        ready = input(f"Enter 'y' once you have adjusted the intruder aircraft to a {args.ac}.\n")
+        assert ready == 'y'
 
-    json_object = json.dumps(data, indent=4)
- 
-    # Writing to sample.json
-    with open("metadata.json", "w") as outfile:
-        outfile.write(json_object)
+    client = XPlaneConnect()
+    client.socket.settimeout(None)
+    version = client.getDREF("sim/version/xplane_internal_version")[0]
+    if version <= 110000: raise RuntimeError("X-Plane version must be >11")
+    client.sendVIEW(85)
 
+    client.sendDREF("sim/weather/cloud_type[1]", 0)
+    client.sendDREF("sim/weather/cloud_type[2]", 0)
+    client.sendDREF("sim/weather/cloud_base_msl_m[0]", 4572) # lowest clouds at about 15000ft
+    client.sendDREF("sim/weather/cloud_tops_msl_m[0]", 5182) # upper end of clouds at about 17000ft
 
-# code to help obtain new starting positions
-def testing_locs(client):
-    client.pauseSim(True)
-    client.sendDREF("sim/operation/override/override_joystick", 1)
+    if args.weather is not None:
+        cloud0 = args.weather
+        client.sendDREF("sim/weather/cloud_type[0]", cloud0)
 
+    if args.allweather:
+        if args.datasetname is None:
+            stamp = time.time()
+            foldername = "data_" + str(stamp)
+            args.datasetname = foldername
 
-    o = Aircraft(0, 0, 0, 0, 0, pitch=0, roll=0)
-    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-    set_position(client, o)
-    set_position(client, i)
-    time.sleep(10)
-
-    for v in range(25):
-        for h in range(40):
-            i = get_intruder_position(o, 60.0, h, v, 0)
-            set_position(client, i)
-            time.sleep(0.01)
-
-    i = get_intruder_position(o, 60.0, 40, 0, 0)
-    set_position(client, i)
-    time.sleep(2)
-
-    i = get_intruder_position(o, 60.0, 0, 25, 0)
-    set_position(client, i)
-    time.sleep(2)
-    '''
-
-    for p in range(90):
-        for r in range(90):
-            for h in range(90):
-                o = Aircraft(0, 0, 0, 0, h, pitch=p, roll=r)
-                i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-                set_position(client, o)
-                i = get_intruder_position(o, 60.0, 38, 22, 0)
-                set_position(client, i)
-                time.sleep(0.02)'''
-
-    return
-
-
-    print(o)
-    set_position(client, o)
-    i = Aircraft(1, 0, 20, 0, 0, pitch=0, roll=0)
-    set_position(client, i)
-    #time.sleep(2)
-    i = get_intruder_position(o, 20, 0, 0, 0)
-    print(i)
-    set_position(client, i)
+        for w in range(6):
+            client.sendDREF("sim/weather/cloud_type[0]", w)
+            args.weather = w
+            outdir, total_images = prepare_files(args)
+            run_data_generation(client, outdir, total_images)
+            if args.label: run_labeling(outdir)
+            args.append = True
+    else:
+        outdir, total_images = prepare_files(args)
+        run_data_generation(client, outdir, total_images)
+        if args.label: run_labeling(outdir)
 
 if __name__ == "__main__":
-    client = XPlaneConnect()
-    set_metadata(client)
-
-    #testing_locs(client)
-    run_data_generation(client)
+    main()

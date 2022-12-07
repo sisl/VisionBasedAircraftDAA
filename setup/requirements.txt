@@ -4,3 +4,7 @@ pandas
 matplotlib
 opencv-python
 pymap3d
+mss
+notebook
+scipy
+ipywidgets

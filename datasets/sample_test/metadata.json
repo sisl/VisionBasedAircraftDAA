@@ -1,0 +1,177 @@
+{
+    "0.9": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": false,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    },
+    "total_images": 60,
+    "10.19": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 1,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    },
+    "20.29": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 2,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    },
+    "30.39": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 3,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    },
+    "40.49": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 4,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    },
+    "50.59": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 5,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "label": true,
+        "append": true,
+        "datasetname": "sample_test",
+        "ac": "Cessna Skyhawk",
+        "allweather": true,
+        "newac": true,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../datasets/sample_test/"
+    }
+}

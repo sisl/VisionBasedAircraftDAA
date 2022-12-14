@@ -1,15 +1,15 @@
 import mss
 import cv2
 import pymap3d as pm
+import sys
+sys.path.append('..')
 
 from xpc3 import *
-from xpc3_helper import *
 import data_generation.constants as c
 import numpy as np
 import time
 from scipy.stats import truncnorm
 import time
-import sys
 import os
 import argparse
 from data_generation.helpers import *
@@ -205,13 +205,6 @@ def gen_data(client, outdir, total_images):
     csv_file = os.path.join(outdir, 'state_data.csv')
     image_dir = os.path.join(outdir, "train", "images", "")
 
-    '''images_sofar = [int(x[:-4]) for x in list(os.listdir(image_dir))]
-    print (os.listdir(image_dir))
-    if not images_sofar:
-        begin = 0
-    else:
-        begin = max(images_sofar) + 1'''
-
     begin = total_images - args.num_train - args.num_valid
     i = begin
 
@@ -275,15 +268,14 @@ def main():
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-enr", "--enrange", dest="enrange", default = 5000.0, help="Distance in meters east/north from location", type=float)
     parser.add_argument("-ur", "--urange", dest="urange", default=1000.0, help="Distance in meters vertically from location", type=float)
-    parser.add_argument("-w", "--weather", dest="weather", default = None, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
+    parser.add_argument("-w", "--weather", dest="weather", default = 0, help="Cloud Cover (0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast)", type=int)
     parser.add_argument("-ds", "--daystart", dest="daystart", default = 8.0, help="Start of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-de", "--dayend", dest="dayend", default = 17.0, help="End of day in local time (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
     parser.add_argument("-nt", "--train", dest="num_train", default=5, help="Number of samples for training dataset", type=int)
     parser.add_argument("-nv", "--valid", dest="num_valid", default=5, help="Number of samples for validation dataset", type=int)
-    parser.add_argument('--label', dest="label", help="Use this flag to run data generation and labeling with the same call", action='store_true')
     parser.add_argument('--append', dest="append", help="Use this flag in conjunction with --name to add data to an existing dataset", action='store_true')
     parser.add_argument("--name", dest="datasetname", default=None, help="Name of dataset to be generated", type=str)
-    parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type", required=True)
+    parser.add_argument("-ac", "--craft", dest="ac", help="Specify intruder aircraft type ('Cessna Skyhawk', 'Boeing 737-800`, or `King Air C90`)", required=True)
     parser.add_argument("-aw", "--allweather", dest="allweather", help="Use this flag to run this command for every weather type", action='store_true')
     parser.add_argument("--newac", dest="newac", help="Use this flag to indicate that a new aircraft is being used in this instance.", action='store_true')
     parser.set_defaults(own_h=(0.0,360.0), own_p_max=30.0, own_r_max=45.0)
@@ -306,9 +298,12 @@ def main():
     client.sendDREF("sim/weather/cloud_base_msl_m[0]", 4572) # lowest clouds at about 15000ft
     client.sendDREF("sim/weather/cloud_tops_msl_m[0]", 5182) # upper end of clouds at about 17000ft
 
-    if args.weather is not None:
+    if args.weather is None:
+        cloud0 = 0
+    else:
         cloud0 = args.weather
-        client.sendDREF("sim/weather/cloud_type[0]", cloud0)
+    
+    client.sendDREF("sim/weather/cloud_type[0]", cloud0)
 
     if args.allweather:
         if args.datasetname is None:
@@ -321,12 +316,12 @@ def main():
             args.weather = w
             outdir, total_images = prepare_files(args)
             run_data_generation(client, outdir, total_images)
-            if args.label: run_labeling(outdir)
+            run_labeling(outdir)
             args.append = True
     else:
         outdir, total_images = prepare_files(args)
         run_data_generation(client, outdir, total_images)
-        if args.label: run_labeling(outdir)
+        run_labeling(outdir)
 
 if __name__ == "__main__":
     main()

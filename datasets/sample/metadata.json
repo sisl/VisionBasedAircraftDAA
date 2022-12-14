@@ -1,0 +1,31 @@
+{
+    "0.9": {
+        "location": "Palo Alto",
+        "enrange": 5000.0,
+        "urange": 1000.0,
+        "weather": 0,
+        "daystart": 8.0,
+        "dayend": 17.0,
+        "num_train": 5,
+        "num_valid": 5,
+        "append": false,
+        "datasetname": "sample",
+        "ac": "Cessna Skyhawk",
+        "allweather": false,
+        "newac": false,
+        "own_h": [
+            0.0,
+            360.0
+        ],
+        "own_p_max": 30.0,
+        "own_r_max": 45.0,
+        "intr_h": [
+            0.0,
+            360.0
+        ],
+        "vfov": 40.0,
+        "hfov": 50.0,
+        "outdir": "../../datasets/sample/"
+    },
+    "total_images": 10
+}

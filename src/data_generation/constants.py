@@ -2,7 +2,7 @@
 PAUSE_1 = 10 # before data generation
 PAUSE_2 = 0.3 # between each sample
 
-PATH = "../datasets/"
+PATH = "../../datasets/"
 
 # Latitude, Longitiude, and Altitude of different region locations
 # about 3000m msl

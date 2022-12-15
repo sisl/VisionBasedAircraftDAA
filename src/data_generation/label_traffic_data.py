@@ -63,10 +63,3 @@ def run_labeling(outdir):
     to_label = str(max(set_names))
 
     gen_labels(metadata[to_label], metadata['total_images'])
-    
-if __name__ == "__main__":
-    # TODO: make this a parser argument
-    
-    data_folder = input("Name of folder for data you would like to label: ")
-
-    run_labeling(c.PATH + data_folder)

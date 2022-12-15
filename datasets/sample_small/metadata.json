@@ -10,7 +10,7 @@
         "num_valid": 5,
         "label": true,
         "append": false,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -26,7 +26,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     },
     "total_images": 60,
     "10.19": {
@@ -40,7 +40,7 @@
         "num_valid": 5,
         "label": true,
         "append": true,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -56,7 +56,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     },
     "20.29": {
         "location": "Palo Alto",
@@ -69,7 +69,7 @@
         "num_valid": 5,
         "label": true,
         "append": true,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -85,7 +85,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     },
     "30.39": {
         "location": "Palo Alto",
@@ -98,7 +98,7 @@
         "num_valid": 5,
         "label": true,
         "append": true,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -114,7 +114,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     },
     "40.49": {
         "location": "Palo Alto",
@@ -127,7 +127,7 @@
         "num_valid": 5,
         "label": true,
         "append": true,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -143,7 +143,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     },
     "50.59": {
         "location": "Palo Alto",
@@ -156,7 +156,7 @@
         "num_valid": 5,
         "label": true,
         "append": true,
-        "datasetname": "sample_test",
+        "datasetname": "sample_small",
         "ac": "Cessna Skyhawk",
         "allweather": true,
         "newac": true,
@@ -172,6 +172,6 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../datasets/sample_test/"
+        "outdir": "../datasets/sample_small/"
     }
 }

@@ -24,6 +24,7 @@ Instructions for using the data_generation portion of the repository. This will 
 ### Generate Images
 
 *Overview*
+
 All commands to generate data will have the general form of `python3 -m generate_traffic_data -ac [AIRCRAFT NAME]` run from the data_generation folder. The default command will generate 5 training and 5 validation images with 0 cloud cover in Palo Alto with the aircraft as currently set. Specifying the aircraft name in the command is for calculation purposes and will NOT change the aircraft in XPlane. (This must be done manually as specified above). 
 
 The sample command in the `generate` script files is of the form: `python3 -m generate_traffic_data -aw -ac "Cessna Skyhawk" --newac --name "test"`. As specified by the '-aw' flag, the command will generate 10 images (5 training and 5 validation) in each of 6 levels of cloud cover in the default location (Palo Alto) As specified by '--newac', a prompt will appear in the terminal before data is generated asking the user to confirm that the intruder aircraft type in XPlane matches the one specified in the command. As specified by '--name "test"', the data will be generated in a folder called 'test'. 
@@ -31,12 +32,15 @@ The sample command in the `generate` script files is of the form: `python3 -m ge
 Use the `-h` flag to see the different arguments and options available for setting the dataset, flight, and environment specifications. The only required argument is `-ac`/`--craft`, which must be followed by the name of the aircraft type. 
 
 *General Recommendations*
+
 The '-ac' argument is required, and it is recommended that you use '--newac' every time the aircraft needs to be changed. The '--newac' flag will ask the user to verify that the intruder aircraft in XPlane matches the one specified in the command. The options for aircraft type and location strings can be found in the help text outputed when the '-h' flag is used. Location and weather can be changed as desired in sequential commands, and there will be a longer pause between images with these changes. '-aw' can be used to specify that the same command should be run for each of the 6 weather types. The number of training and validation images can be specified using the '-nt' and '-nv' arguments. If a '--name' is not specified for the dataset folder, a folder will be generated with the prefix 'data_' followed by the current time as a floating point number.
 
 *Instructions*
 1. Open a terminal window from this repository and cd into the "data_generation" folder. 
 2. Determine what command(s) you would like to run. If there are multiple commands, you can put them in a script file (such as '.sh' or '.ps1' files).
-3. From the "data_generation" folder, run the command or script file as desired. If '--newac' is used, you must reply 'y' in the terminal when requested. After responding to that prompt, toggle to the XPlane window and wait for the images to generate. If the scene does not begin changing rapidly after 15 seconds, return to the terminal window, as an error may have occurred. Wait for the images to finish generated, which will be evident when the scene stops changing at the same rapid cadence and when there is more than a 15 second pause (which would be to be expected between location switches).
+3. From the "data_generation" folder, run the command or script file as desired. If '--newac' is used, you must reply 'y' in the terminal when requested. 
+4. After responding to that prompt, toggle to the XPlane window and wait for the images to generate. If the scene does not begin changing rapidly after 15 seconds, return to the terminal window, as an error may have occurred. 
+5. Wait for the images to finish generated, which will be evident when the scene stops changing at the same rapid cadence and when there is more than a 15 second pause (which would be to be expected between location switches).
 
 ### Visualize Results
 1. Open the DatasetVisualization.ipynb jupyter notebook located in the "notebooks" folder. 

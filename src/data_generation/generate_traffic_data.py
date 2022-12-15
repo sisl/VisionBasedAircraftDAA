@@ -221,7 +221,7 @@ def gen_data(client, outdir, total_images):
         client.sendDREF("sim/time/zulu_time_sec", zulu_time)
         client.sendDREF("sim/time/local_date_days", 0)
 
-        # Position aircrafts
+        # Position aircraft
         set_position(client, ownship)
         set_position(client, intruder)
 

@@ -6,7 +6,7 @@ import data_generation.constants as c
 import sys
 
 class Aircraft:
-    """Object for storing positional information for Aircrafts"""
+    """Object for storing positional information for Aircraft"""
     
     def __init__(self, ac_num, east, north, up, heading, pitch=-998, roll=-998):
         self.id = ac_num

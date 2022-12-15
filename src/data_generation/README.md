@@ -1,7 +1,7 @@
 # Data Generation
 
 ## Contents
-* **constants.py:** Contains constants for locations and aircrafts used in data generation and labeling calculations
+* **constants.py:** Contains constants for locations and aircraft used in data generation and labeling calculations
 * **generate_traffic_data.py:** Main file containing code for generating images using XPlane
 * **generate.sh and generate.ps1:** Script files that can be used for running multiple commands in a row. Includes example data generation commands
 * **helpers.py:** Contains helper functions for data generation
@@ -14,11 +14,11 @@ Instructions for using the data_generation portion of the repository. This will 
 1. Follow the setup instructions in the [root README](../../README.md).
 2. Open XPlane in full screen mode. If using Windows OS, follow troubleshooting tip #1 below. 
 3. From the main menu, select "New Flight"
-4. **Setup aircrafts**
+4. **Setup aircraft**
     * Select any aircraft type for the ownship. Testing was predominantly done with Cessna Skyhawk as ownship.
     * In the upper right corner of the Aircraft menu, select "AI Aircraft." 
-    * If there are intruder aircrafts already listed, delete all but 1 and then click on "Edit." If there are none, select "Add Aircraft" in the bottom left corner and then select "Edit" for the aircraft that newly appears.
-    * In the Edit menu, select one of the following aircrafts: Boeing 737-800, Cessna Skyhawk, or King Air C90. Then click "Done." 
+    * If there are intruder aircraft already listed, delete all but 1 and then click on "Edit." If there are none, select "Add Aircraft" in the bottom left corner and then select "Edit" for the aircraft that newly appears.
+    * In the Edit menu, select one of the following aircraft: Boeing 737-800, Cessna Skyhawk, or King Air C90. Then click "Done." 
 5. In the bottom right corner, select "Start Flight" and wait for the scene to appear. 
 
 ### Generate Images

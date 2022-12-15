@@ -9,7 +9,7 @@
         "num_train": 5,
         "num_valid": 5,
         "append": false,
-        "datasetname": "sample",
+        "datasetname": "sample_mini",
         "ac": "Cessna Skyhawk",
         "allweather": false,
         "newac": false,
@@ -25,7 +25,7 @@
         ],
         "vfov": 40.0,
         "hfov": 50.0,
-        "outdir": "../../datasets/sample/"
+        "outdir": "../../datasets/sample_mini/"
     },
     "total_images": 10
 }

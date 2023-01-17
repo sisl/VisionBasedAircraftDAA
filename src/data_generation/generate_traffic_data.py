@@ -203,7 +203,7 @@ def gen_data(client, outdir, total_images):
     time.sleep(c.PAUSE_2)
 
     csv_file = os.path.join(outdir, 'state_data.csv')
-    image_dir = os.path.join(outdir, "train", "images", "")
+    image_dir = os.path.join(outdir, "images", "train", "")
 
     begin = total_images - args.num_train - args.num_valid
     i = begin
@@ -211,7 +211,7 @@ def gen_data(client, outdir, total_images):
     num_scratch = 2
 
     while i < total_images:
-        if i == total_images - args.num_valid: image_dir = os.path.join(outdir, "valid", "images", "")
+        if i == total_images - args.num_valid: image_dir = os.path.join(outdir, "images", "valid", "")
         # Sample random state
         ownship, intruder, vang, hang, z = sample_random_state()
 

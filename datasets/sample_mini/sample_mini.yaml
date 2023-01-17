@@ -1,4 +1,5 @@
-train: ../../datasets/sample_mini/train/images
-val: ../../datasets/sample_mini/valid/images
+path: ../datasets/sample_mini
+train: images/train
+val: images/valid
 names:
   0: aircraft

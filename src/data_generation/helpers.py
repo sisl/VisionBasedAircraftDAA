@@ -25,8 +25,9 @@ def make_yaml_file(outdir, name):
     """Create yaml file for YOLO formatting"""
 
     data = {
-        "train": os.path.join(outdir, "train", "images"),
-        "val": os.path.join(outdir, "valid", "images"),
+        "path": os.path.join("..", "datasets", name),
+        "train": os.path.join("images", "train"),
+        "val": os.path.join("images", "valid"),
         "names": {0: "aircraft"}
     }
     with open(os.path.join(outdir, f"{name}.yaml"), 'w+') as out:
@@ -52,10 +53,10 @@ def prepare_files(args):
      
     if not args.append:
         os.makedirs(outdir)
-        os.makedirs(os.path.join(outdir, "train", "images", ""))
-        os.makedirs(os.path.join(outdir, "valid", "images", ""))
-        os.makedirs(os.path.join(outdir, "train", "labels", ""))
-        os.makedirs(os.path.join(outdir, "valid", "labels", ""))
+        os.makedirs(os.path.join(outdir, "images", "train", ""))
+        os.makedirs(os.path.join(outdir, "images", "valid", ""))
+        os.makedirs(os.path.join(outdir, "labels", "train", ""))
+        os.makedirs(os.path.join(outdir, "labels", "valid", ""))
 
         csv_file = os.path.join(outdir, 'state_data.csv')
 

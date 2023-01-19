@@ -1,4 +1,10 @@
 datasets/data_*
+runs
+src/*[.pt|.onnx]
+datasets/*
+!datasets/sample_mini
+!datasets/sample_small
+
 __pycache__/
 .vscode
 .ipynb_checkpoints

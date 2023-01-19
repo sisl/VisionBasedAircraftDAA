@@ -12,7 +12,7 @@
         "datasetname": "sample_mini",
         "ac": "Cessna Skyhawk",
         "allweather": false,
-        "newac": false,
+        "newac": true,
         "own_h": [
             0.0,
             360.0

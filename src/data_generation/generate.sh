@@ -3,7 +3,7 @@
 # of the ending word to uncomment the commands in between. 
 
 #<<TESTING
-python3 -m generate_traffic_data -aw -ac "Cessna Skyhawk" --newac --name "test"
+python3 -m generate_traffic_data -aw -ac "Cessna Skyhawk" --newac --name "sample_small"
 #TESTING
 
 <<CessnaSkyhawk
@@ -17,7 +17,7 @@ fi
 CessnaSkyhawk
 
 <<Boeing737-800
-python3 -m generate_traffic_data -aw --train 9 --valid 1 --location "Palo Alto" --name "sample_dataset" -ac "Boeing 737-800" --append --newac
+python3 -m generate_traffic_data -aw --train 900 --valid 100 --location "Palo Alto" --name "sample_dataset" -ac "Boeing 737-800" --append --newac
 if [ $? = 0 ]
 then
     python3 -m generate_traffic_data -aw --train 900 --valid 100 --location "Osh Kosh" --name "sample_dataset" -ac "Boeing 737-800" --append
@@ -27,7 +27,7 @@ fi
 Boeing737-800
 
 <<KingAirC90
-python3 -m generate_traffic_data -aw --train 9 --valid 1 --location "Palo Alto" --name "sample_dataset" -ac "King Air C90" --append --newac
+python3 -m generate_traffic_data -aw --train 900 --valid 100 --location "Palo Alto" --name "sample_dataset" -ac "King Air C90" --append --newac
 if [ $? = 0 ]
 then
     python3 -m generate_traffic_data -aw --train 900 --valid 100 --location "Osh Kosh" --name "sample_dataset" -ac "King Air C90" --append

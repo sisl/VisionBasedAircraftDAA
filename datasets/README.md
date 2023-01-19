@@ -14,21 +14,21 @@ The general structure of each folder is diagrammed below. See the above-linked f
     ├── metadata.json
     ├── [DATASET NAME].yaml
     ├── state_data.json
-    ├── train/
-    │   ├── images/
+    ├── images/
+    │   ├── train/
     │   │   ├── 0.jpg
     │   │   ├── 1.jpg
     │   │   └── ...
-    │   └── labels/
+    │   └── valid/
     │       ├── 0.txt
     │       ├── 1.txt
     │       └── ...
-    └── valid/
-        ├── images/
+    └── labels/
+        ├── train/
         │   ├── x.jpg
         │   ├── x+1.jpg
         │   └── ...
-        └── labels/
+        └── valid/
             ├── x.txt
             ├── x+1.txt
             └── ...

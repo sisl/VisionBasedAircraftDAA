@@ -1,11 +1,19 @@
 datasets/data_*
-runs
+
 src/*[.pt|.onnx]
 datasets/*
 !datasets/sample_mini
 !datasets/sample_small
+runs/detect/*
+!runs/detect/train
+**/yolov*
+src/datasets
+src/detection_scripts/datasets
 
 __pycache__/
 .vscode
 .ipynb_checkpoints
 .DS_Store
+
+*.pt
+build/

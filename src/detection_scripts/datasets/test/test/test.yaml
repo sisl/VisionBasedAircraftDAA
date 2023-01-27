@@ -1,0 +1,5 @@
+path: ../datasets/test
+train: images/train
+val: images/valid
+names:
+  0: aircraft

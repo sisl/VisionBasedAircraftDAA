@@ -4,13 +4,13 @@ import os
 
 
 def train():
-    name = "starter_dataset"
+    name = "starter_dataset_new"
     #task = Task.init(project_name="YOLOv8", task_name=name)
     model = YOLO("yolov8s.yaml")  # build a new model from scratch
 
     path = os.path.join("VisionBasedAircraftDAA","datasets",name,f"{name}.yaml")
     path2 = os.path.join("datasets", name,f"{name}.yaml")
-    results = model.train(data=f"{path2}", epochs=100, device="0")  # train the model
+    results = model.train(data=f"{path2}", epochs=100, device=0, cache=False, batch=6)  # train the model
     results = model.val()
     success = model.export()
 

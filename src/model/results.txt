@@ -1,0 +1,93 @@
+EVALUATION DETAILS
+Model: ../../models/baseline.pt
+Dataset: ../../datasets/sample_small
+
+OVERALL PERFORMANCE
+Valid (30 samples): Precision: 0.9375, Recall: 0.9375
+Train (30 samples): Precision: 1.0, Recall: 0.8125
+
+---------------------------
+
+PERFORMANCE ON CLOUD COVERING
+clouds=0
+Valid (5 samples): Precision: 0.7142857142857143, Recall: 0.8333333333333334
+Train (5 samples): Precision: 1.0, Recall: 0.8333333333333334
+clouds=1
+Valid (5 samples): Precision: 1.0, Recall: 1.0
+Train (5 samples): Precision: 1.0, Recall: 1.0
+clouds=2
+Valid (5 samples): Precision: 1.0, Recall: 1.0
+Train (5 samples): Precision: 1.0, Recall: 0.6666666666666666
+clouds=3
+Valid (5 samples): Precision: 1.0, Recall: 1.0
+Train (5 samples): Precision: 1.0, Recall: 0.8
+clouds=4
+Valid (5 samples): Precision: 1.0, Recall: 0.8
+Train (5 samples): Precision: 1.0, Recall: 0.8
+clouds=5
+Valid (5 samples): Precision: 1.0, Recall: 1.0
+Train (5 samples): Precision: 1.0, Recall: 0.8
+
+PERFORMANCE ON DISTANCE BETWEEN OWNSHIP AND INTRUDER
+distance=close (0-150m)
+Valid (6 samples): Precision: 1.0, Recall: 1.0
+Train (5 samples): Precision: 1.0, Recall: 1.0
+distance=medium (150-500m)
+Valid (15 samples): Precision: 0.875, Recall: 0.9333333333333333
+Train (15 samples): Precision: 1.0, Recall: 1.0
+distance=far (>500m)
+Valid (9 samples): Precision: 1.0, Recall: 0.9090909090909091
+Train (10 samples): Precision: 1.0, Recall: 0.45454545454545453
+
+PERFORMANCE ON VERTICAL ANGLE
+vang=below (vang<0deg)
+Valid (15 samples): Precision: 1.0, Recall: 0.8823529411764706
+Train (15 samples): Precision: 1.0, Recall: 0.8
+vang=above (vang>0deg)
+Valid (15 samples): Precision: 0.8823529411764706, Recall: 1.0
+Train (15 samples): Precision: 1.0, Recall: 0.8235294117647058
+
+PERFORMANCE ON AIRCRAFT TYPE
+craft=Cessna Skyhawk
+Valid (30 samples): Precision: 0.9375, Recall: 0.9375
+Train (30 samples): Precision: 1.0, Recall: 0.8125
+craft=Boeing 737-800
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+craft=King Air C90
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+
+PERFORMANCE ON REGIONS
+location=Palo Alto
+Valid (30 samples): Precision: 0.9375, Recall: 0.9375
+Train (30 samples): Precision: 1.0, Recall: 0.8125
+location=Boston
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+location=Osh Kosh
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+location=Reno Tahoe
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+
+PERFORMANCE ON TIMES OF DAY
+hours=night (0-4)
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+hours=early morning (4-8)
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+hours=late morning (8-12)
+Valid (12 samples): Precision: 1.0, Recall: 0.9230769230769231
+Train (15 samples): Precision: 1.0, Recall: 0.8666666666666667
+hours=afternoon (12-18)
+Valid (18 samples): Precision: 0.9, Recall: 0.9473684210526315
+Train (15 samples): Precision: 1.0, Recall: 0.7647058823529411
+hours=evening (18-21)
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA
+hours=late night (20-24)
+Valid (0 samples): Precision: NA, Recall: NA
+Train (0 samples): Precision: NA, Recall: NA

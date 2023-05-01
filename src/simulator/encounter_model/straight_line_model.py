@@ -10,11 +10,11 @@ from utils import EncounterDescription
 def sampler():
     '''returns random encounter information'''
 
-    v0 = np.random.uniform(45, 55) # horizontal velocity of ownship (m/s)
-    v1 = np.random.uniform(45, 55) # horizontal velocity of intruder (m/s)
+    v0 = np.random.uniform(60, 70) # horizontal velocity of ownship (m/s)
+    v1 = np.random.uniform(60, 70) # horizontal velocity of intruder (m/s)
     hmd = np.random.uniform(0, 100) # horizontal miss distance (m)
     vmd = np.random.uniform(-30, 30) # vertical miss distance (m)
-    theta_cpa = np.random.uniform(120, 240) # relative heading at closest point of approach
+    theta_cpa = np.random.uniform(100, 260) # relative heading at closest point of approach
     t_cpa = 40 # time at closest point of approach
     t_tot = 50 # total number of timesteps
     return EncounterDescription(v0, v1, hmd, vmd, theta_cpa, t_cpa, t_tot)
@@ -37,6 +37,7 @@ def get_encounter_states(enc_des, dt=1):
     # Assumption : ownship starts at origin at "closest point of approach" time
     ownship_2d_cpa = [0.0, 0.0]
     theta_rad = np.deg2rad(enc_des.theta_cpa)
+    print(enc_des.theta_cpa)
     intruder_2d_cpa = [enc_des.hmd * np.sin(theta_rad),
                        enc_des.hmd * np.cos(theta_rad)]
     '''intruder_2d_cpa = [enc_des.hmd * -np.sin(theta_rad),

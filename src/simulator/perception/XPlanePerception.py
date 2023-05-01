@@ -12,9 +12,10 @@ import cv2
 import os
 import shutil
 import pymap3d as pm
+from perception.xp_constants import REGION_OPTIONS, TIME_OPTIONS
 
 
-def set_position(client, aircraft, ref=[37.46358871459961, -122.11750030517578, 3048.0]):
+def set_position(client, aircraft, loc):
     """Sets position of aircraft in XPlane
 
     Parameters
@@ -24,6 +25,7 @@ def set_position(client, aircraft, ref=[37.46358871459961, -122.11750030517578, 
     aircraft : Aircraft
         object containing details about craft's position
     """
+    ref = REGION_OPTIONS[loc]
     p = pm.enu2geodetic(aircraft.e, aircraft.n, aircraft.u, ref[0], ref[1], ref[2]) #east, north, up
     client.sendPOSI([*p, aircraft.p, aircraft.r, aircraft.h], aircraft.id)
 
@@ -31,14 +33,31 @@ def set_position(client, aircraft, ref=[37.46358871459961, -122.11750030517578, 
 class XPlanePerception:
     '''Uses aircraft detection model to detect the intruder'''
 
-    def __init__(self, model_path="../../models/baseline.pt"):
+    def __init__(self, args, model_path="../../models/baseline.pt"):
         self.client = None
+        self.args = args
         self.model_path = model_path
         self.model = YOLO(self.model_path)
         self.setup_xplane()
         self.image_count = 0
         self.image_dir = 'perception/images/'
+        self.setup_environ()
         
+    def setup_environ(self):
+        client = self.client
+
+        # setting cloud layers
+        client.sendDREF("sim/weather/cloud_type[1]", 0)
+        client.sendDREF("sim/weather/cloud_type[2]", 0)
+        client.sendDREF("sim/weather/cloud_base_msl_m[0]", 4572) # lowest clouds at about 15000ft
+        client.sendDREF("sim/weather/cloud_tops_msl_m[0]", 5182) # upper end of clouds at about 17000ft
+        client.sendDREF("sim/weather/cloud_type[0]", self.args.weather)
+
+    def set_time(self):
+        # set time
+        zulu_time = (self.args.time*3600) + (TIME_OPTIONS[self.args.location] * 3600)
+        self.client.sendDREF("sim/time/zulu_time_sec", zulu_time)
+        self.client.sendDREF("sim/time/local_date_days", 0)
 
     def setup_xplane(self):
         '''Establishes connection with XPlane to prepare for detection'''
@@ -52,8 +71,8 @@ class XPlanePerception:
         client.sendVIEW(85)
 
         self.client = client
-        set_position(client, Aircraft(0, 0, 0, 0, 15, pitch=0, roll=0))
-        set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0))
+        set_position(client, Aircraft(0, 0, 0, 0, 15, pitch=0, roll=0), self.args.location)
+        set_position(client, Aircraft(1, 0, 50, 0, 0, pitch=0, roll=0), self.args.location)
 
     def mult_matrix_vec(self, m, v):
         """4x4 matrix transform of an XYZW coordinate - this matches OpenGL matrix conventions"""
@@ -110,11 +129,11 @@ class XPlanePerception:
         # z: ownship z value
 
         # set plane positions and take screenshot
-        set_position(self.client, Aircraft(0, x0, y0, z0, theta0))
-        set_position(self.client, Aircraft(1, x1, y1, z1, theta1))
-        time.sleep(0.5)
+        set_position(self.client, Aircraft(0, x0, y0, z0, theta0), self.args.location)
+        set_position(self.client, Aircraft(1, x1, y1, z1, theta1), self.args.location)
+        time.sleep(0.3)
         screen_shot = mss.mss()
-        ss = np.array(screen_shot.grab(screen_shot.monitors[0]))[:, :, :3]
+        ss = np.array(screen_shot.grab(screen_shot.monitors[1]))[:, :, :3]
         true_state = self.get_bb_coords(ss)
 
         # make and save prediction

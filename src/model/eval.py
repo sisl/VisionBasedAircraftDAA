@@ -81,10 +81,16 @@ def get_data(subdir):
     image_list = []
     file_list = []
     y_true_xyxy = []
+    y_pred_xyxy = []
+
+    count = 0
+    total_count = 0
+
 
     for im_f in source_list:
         im_path = os.path.join(args.path_to_datadir, "images", subdir, im_f)
         if os.path.isfile(im_path):
+            if im_path == os.path.join(args.path_to_datadir, "images", subdir, '.DS_Store'): continue
             file_list.append(int(im_f.replace('.jpg', '')))
             image_list.append(Image.open(im_path))
             with open(os.path.join(args.path_to_datadir, "labels", subdir, im_f.replace('.jpg', '.txt')), "r") as labelfile:
@@ -93,14 +99,21 @@ def get_data(subdir):
             data = torch.FloatTensor([data])
             data = tv.ops.box_convert(data, 'cxcywh', 'xyxy')
             y_true_xyxy.append(data)
-    results = model.predict(
-        source=image_list, save=args.save, save_txt=args.save)
-    y_pred_xyxy = []
-    for i in range(len(results)):
-        if results[i].boxes.shape[0] == 0:
-            y_pred_xyxy.append(None)
-        else:
-            y_pred_xyxy.append(results[i].boxes.xyxyn)
+            count += 1
+            total_count += 1
+        if count == 100:
+            results = model.predict(
+                source=image_list, save=args.save, save_txt=args.save)
+            print (f"Processed {total_count} images")
+            
+            for i in range(len(results)):
+                if results[i].boxes.shape[0] == 0:
+                    y_pred_xyxy.append(None)
+                else:
+                    y_pred_xyxy.append(results[i].boxes.xyxyn)
+            count = 0
+            image_list.clear()
+
     return file_list, y_pred_xyxy, y_true_xyxy
 
 
@@ -112,8 +125,23 @@ def filter_data(category, criteria):
             for i in range(len(df)) if criteria(df.iloc[i][category])]
     return idxs
 
+def process_filter(filt, files, y_pred, y_true, subset):
+    '''Filters data and calculates evaluation metrics on that data subset'''
 
-def process_filter(filt, files_val, y_pred_val, y_true_val, files_train, y_pred_train, y_true_train):
+    filtered_files = [i for i in range(len(files)) if files[i] in filt]
+    if subset == 'valid': 
+        output_to_file(f'Valid ({len(filtered_files)} samples): ')
+    else:
+        output_to_file(f'Train ({len(filtered_files)} samples): ')
+
+    y_pred_temp = [y_pred[i]
+                   for i in range(len(y_pred)) if i in filtered_files]
+    y_true_temp = [y_true[i]
+                   for i in range(len(y_true)) if i in filtered_files]
+    ious = get_ious(y_pred_temp, y_true_temp)
+    get_prec_and_recall(ious)
+
+def process_filte2r(filt, files_val, y_pred_val, y_true_val, files_train, y_pred_train, y_true_train):
     '''Filters data and calculates evaluation metrics on that data subset'''
 
     filtered_files = [i for i in range(len(files_val)) if files_val[i] in filt]
@@ -143,9 +171,11 @@ def create_report():
     output_to_file(f"Model: {args.path_to_model}\n")
     output_to_file(f"Dataset: {args.path_to_datadir}\n\n")
     output_to_file("OVERALL PERFORMANCE\n")
-    subdirs = ['valid', 'train'] if args.train_and_val else ['valid']
+    #subdirs = ['valid', 'train'] if args.train_and_val else ['valid']
     files_val, y_pred_val, y_true_val = get_data('valid')
-    files_train, y_pred_train, y_true_train = get_data('train')
+    if args.train_and_val: files_train, y_pred_train, y_true_train = get_data('train')
+
+    print('here')
 
     # Filters
     ranges = {'close (0-150m)': lambda r: r < 150, 'medium (150-500m)': lambda r: r >=
@@ -154,60 +184,63 @@ def create_report():
     rel_alt = {'below (vang<0deg)': lambda a: a < 0,
                'above (vang>0deg)': lambda a: a >= 0}
     regions = consts.REGION_OPTIONS
-    hours = {'night (0-4)': (0, 4), 'early morning (4-8)': (4, 8), 'late morning (8-12)': (8, 12),
-             'afternoon (12-18)': (12, 18), 'evening (18-21)': (18, 21), 'late night (20-24)': (21, 24)}
+    hours = {'morning (0800-1000)': (8, 10), 'midday (1000-1300)': (10, 13), 'early afternoon (1300-1500)': (13, 15), 'late afternoon (1500-1700)': (15, 17)}
+    #hours = {'night (0-4)': (0, 4), 'early morning (4-8)': (4, 8), 'late morning (8-12)': (8, 12),
+             #'afternoon (12-18)': (12, 18), 'evening (18-21)': (18, 21), 'late night (20-24)': (21, 24)}
 
+    print('here2') 
     # print metrics for full validation set and train if specified
     output_to_file(f"Valid ({len(y_pred_val)} samples): ")
     ious = get_ious(y_pred_val, y_true_val)
     get_prec_and_recall(ious)
-    output_to_file(f"Train ({len(y_pred_train)} samples): ")
-    ious = get_ious(y_pred_train, y_true_train)
-    get_prec_and_recall(ious)
+    if args.train_and_val:
+        output_to_file(f"Train ({len(y_pred_train)} samples): ")
+        ious = get_ious(y_pred_train, y_true_train)
+        get_prec_and_recall(ious)
 
     output_to_file(
         "\n---------------------------\n\nPERFORMANCE ON CLOUD COVERING\n")
     for c in range(6):
         output_to_file(f"clouds={c}\n")
         cloud_filter = filter_data("clouds", lambda x: x == c)
-        process_filter(cloud_filter, files_val, y_pred_val,
-                       y_true_val, files_train, y_pred_train, y_true_train)
+        process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(cloud_filter, files_train, y_pred_train, y_true_train, 'train')
 
     output_to_file("\nPERFORMANCE ON DISTANCE BETWEEN OWNSHIP AND INTRUDER\n")
     for r in ranges:
         filt = filter_data("z", ranges[r])
         output_to_file(f"distance={r}\n")
-        process_filter(filt, files_val, y_pred_val, y_true_val,
-                       files_train, y_pred_train, y_true_train)
+        process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
     output_to_file("\nPERFORMANCE ON VERTICAL ANGLE\n")
     for a in rel_alt:
         filt = filter_data("vang", rel_alt[a])
         output_to_file(f"vang={a}\n")
-        process_filter(filt, files_val, y_pred_val, y_true_val,
-                       files_train, y_pred_train, y_true_train)
+        process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
     output_to_file("\nPERFORMANCE ON AIRCRAFT TYPE\n")
     for ac in crafts:
         filt = filter_data("ac", lambda x: x.strip() == ac)
         output_to_file(f"craft={ac}\n")
-        process_filter(filt, files_val, y_pred_val, y_true_val,
-                       files_train, y_pred_train, y_true_train)
+        process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
     output_to_file("\nPERFORMANCE ON REGIONS\n")
     for r in regions:
         filt = filter_data("loc", lambda x: x.strip() == r)
         output_to_file(f"location={r}\n")
-        process_filter(filt, files_val, y_pred_val, y_true_val,
-                       files_train, y_pred_train, y_true_train)
+        process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
     output_to_file("\nPERFORMANCE ON TIMES OF DAY\n")
     for h in hours:
         filt = filter_data("local_time_sec", lambda x: x /
                            3600 >= hours[h][0] and x / 3600 < hours[h][1])
         output_to_file(f"hours={h}\n")
-        process_filter(filt, files_val, y_pred_val, y_true_val,
-                       files_train, y_pred_train, y_true_train)
+        process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
 
 if __name__ == '__main__':

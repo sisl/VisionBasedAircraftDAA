@@ -32,8 +32,9 @@ class Encounter:
 
     def retrieve_data(self):
         '''returns matrix of the ownship and intruder data'''
+        advisories = [[a] for a in self.advisories]
 
-        joined = np.hstack((self.own_data, self.intr_data))
+        joined = np.hstack((self.own_data, self.intr_data, advisories))
         return (joined)
 
     def get_ttot(self):
@@ -76,7 +77,7 @@ class Encounter:
 
         own, = axis.plot(self.own_data[:, 0], self.own_data[:, 1], 'r', label=self.own_data[0,5])
         intr, = axis.plot(self.intr_data[:, 0], self.intr_data[:, 1], 'b', label=self.intr_data[0,5])
-        #axis.legend(handles=[own, intr])
+        axis.legend(handles=[own, intr])
 
     def create_tz_plot(self, axis):
         '''Helper function for outputting vertical profile plot of encounter'''
@@ -95,7 +96,7 @@ def output_file(encs, name):
     
     csv_file = os.path.join("..", "encounter_sets", name + '.csv')
     with open(csv_file, 'w+') as fd:
-        fd.write("enc_number,t,x0,y0,z0,v0,dh0,theta0,x1,y1,z1,v1,dh1,theta1\n")
+        fd.write("enc_number,t,x0,y0,z0,v0,dh0,theta0,x1,y1,z1,v1,dh1,theta1,advisory\n")
     with open(csv_file, 'a') as fd:
         num = 1
         for enc in encs:

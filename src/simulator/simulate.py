@@ -60,10 +60,11 @@ def run_simulator(encs):
     '''Runs simulation'''
 
     controller = VCAS()
-    perceptor = XPlanePerception()
+    perceptor = XPlanePerception(args)
 
     output_encs = []
     enc_num = 1
+
     for enc in encs:
         # for choosing one encounter to run
         if args.enc_idx is not None and enc_num != args.enc_idx:
@@ -74,6 +75,10 @@ def run_simulator(encs):
         diverged = False
         s_own_prime = 0
         action = Advisories.COC
+
+        # set time
+        if args.time is not None:
+            perceptor.set_time()
         
         for t in range(enc.get_ttot()):
             # PERCEPTION: prepare state attributes and perceive
@@ -109,6 +114,9 @@ def run_simulator(encs):
         enc_num += 1
 
     output_encs = np.array(output_encs)
+    print("BEFORE SIMULATION")
+    runEval(encs)
+    print("AFTER SIMULATION")
     runEval(output_encs)
     return
 
@@ -131,20 +139,24 @@ def run_simulator(encs):
 
 def import_encounter_set(dir):
     '''Converts encounter.csv file to a list of encounter objects'''
-    
+
     df = pd.read_csv(dir)
     num_encs = df.enc_number.max()
     encs_list = []
     for i in range(1, num_encs + 1):
         enc_row = df[df.enc_number == i]
         encs_list.append(Encounter(enc_row[enc_row.columns[2:8]].to_numpy(),
-                                   enc_row[enc_row.columns[8:14]].to_numpy()))
+                                   enc_row[enc_row.columns[8:14]].to_numpy(), enc_row['advisory'].to_numpy()))
     return encs_list
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--enc_idx", dest="enc_idx", default=None, type=int)
+    parser.add_argument("-w", "--weather", dest="weather", default=0, type=int)
+    parser.add_argument("-t", "--time", dest="time", default=None, help="Local time at which encounters should start (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
+    parser.add_argument("-xp", dest="xp", help="Use this flag to enable XPlane customization.", action='store_true')
+
     global args
     args = parser.parse_args()
 

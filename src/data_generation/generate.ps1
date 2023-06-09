@@ -28,12 +28,12 @@ if ( $? )
 }
 #>
 
-<#KingAirC90
-python -m generate_traffic_data -aw --train 900 --valid 100 --location "Palo Alto" --name $NAME -ac "King Air C90" --append --newac
-if ( $? ) 
-{
-    python -m generate_traffic_data -aw --train 900 --valid 100 --location "Osh Kosh" --name $NAME -ac "King Air C90" --append
-    python -m generate_traffic_data -aw --train 900 --valid 100 --location "Boston" --name $NAME -ac "King Air C90" --append
-    python -m generate_traffic_data -aw --train 900 --valid 100 --location "Reno Tahoe" --name $NAME -ac "King Air C90" --append
-}
-#>
+#<#KingAirC90
+#python -m generate_traffic_data -aw --train 900 --valid 100 --location "Palo Alto" --name $NAME -ac "King Air C90" --append --newac
+#if ( $? ) 
+#{
+#    python -m generate_traffic_data -aw --train 900 --valid 100 --location "Osh Kosh" --name $NAME -ac "King Air C90" --append
+python -m generate_traffic_data -aw --train 900 --valid 100 --location "Boston" --name $NAME -ac "King Air C90" --append
+python -m generate_traffic_data -aw --train 900 --valid 100 --location "Reno Tahoe" --name $NAME -ac "King Air C90" --append
+#}
+##>

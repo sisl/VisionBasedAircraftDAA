@@ -1,5 +1,7 @@
+import sys
+sys.path.append('..')
+
 from evaluation import output_enc_result, evalSingleAlertFrequency, evalSingleNMAC
-import torch
 from perception.xp_constants import REGION_OPTIONS, TIME_OPTIONS
 import pymap3d as pm
 import shutil
@@ -12,8 +14,6 @@ import numpy as np
 from data_generation.helpers import Aircraft
 from xpc3 import *
 import time
-import sys
-sys.path.append('..')
 
 
 def set_position(client, aircraft, loc):
@@ -172,7 +172,7 @@ class XPlanePerception:
 
     def evalEnc(self, enc, enc_num, args):
         output_enc_result(
-            f'{args.encs_dir},{enc_num},{args.weather},{args.location},{args.craft},{args.time_window},{self.latest_exact_time},', args.fname)
+            f'{args.encs_dir},{self.model_path},{enc_num},{args.weather},{args.location},{args.craft},{args.time_window},{self.latest_exact_time},', args.fname)
         evalSingleAlertFrequency(enc, args.fname)
         evalSingleNMAC(enc, args.fname)
 

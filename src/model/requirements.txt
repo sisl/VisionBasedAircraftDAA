@@ -1,9 +1,7 @@
-clearml
-ultralytics
-torch 
+torch
 torchvision
 pandas
-numpy
-matplotlib
+sklearn
+ultralytics
 Pillow
-scikit-learn
+numpy

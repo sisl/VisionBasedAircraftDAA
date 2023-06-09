@@ -1,22 +1,15 @@
 from encounter_model.utils import Encounter
 import numpy as np
 
-def output_to_file(msg, reset=False):
-    '''Prints evaluation to output file'''
-
-    permission = 'a'
-    if reset: permission = 'w'
-    with open(f"eval_results.csv", permission) as outfile:
-        outfile.write(msg)
-
 def output_enc_result(msg, fname, reset=False):
     permission = 'a'
     if reset: permission = 'w'
-    with open(f"{fname}", permission) as outfile:
+    with open(f"{fname}.csv", permission) as outfile:
         outfile.write(msg)
 
-'''returns number of NMACs'''
 def evalNMACs(simulated_encs: list[Encounter]):
+    '''returns number of NMACs'''
+    
     nmacs = 0
     for se in simulated_encs:
         own_data = se.own_data
@@ -38,10 +31,11 @@ def evalNMACs(simulated_encs: list[Encounter]):
                 break
 
     print(f"NMACs: {nmacs} out of {len(simulated_encs)} encounters resulted in near mid-air collisions\n")
-    output_to_file(f'{nmacs}\n')
     return nmacs
 
 def evalSingleAlertFrequency(enc: Encounter, fname):
+    '''outputs alert frequency for one encounter'''
+
     alert_count = 0
     timestep_count = 0
     alerts = enc.advisories
@@ -50,6 +44,8 @@ def evalSingleAlertFrequency(enc: Encounter, fname):
     output_enc_result(f'{alert_count / timestep_count},', fname)
 
 def evalSingleNMAC(enc: Encounter, fname):
+    '''outputs whether or not an encounter resulted in an NMAC'''
+
     own_data = enc.own_data
     intr_data = enc.intr_data
         
@@ -69,9 +65,9 @@ def evalSingleNMAC(enc: Encounter, fname):
             return
     output_enc_result(f"0\n", fname)
 
-
-'''returns fraction of timesteps that had a non-COC alert'''
 def evalAlertFrequency(simulated_encs: list[Encounter]):
+    '''returns fraction of timesteps that had a non-COC alert'''
+
     alert_count = 0
     coc_count = 0
     timestep_count = 0
@@ -83,19 +79,9 @@ def evalAlertFrequency(simulated_encs: list[Encounter]):
 
     alert_frac = alert_count / timestep_count
     print(f"Alerts: The pilot saw an advisory {alert_frac * 100}% of the time.\n")
-    output_to_file(f"{alert_frac},")
     return alert_frac
 
-def runEval(encs, when, args):
+def runEval(encs):
     print ("EVALUATION")
-    output_to_file(f'{when},{len(encs)},{args.weather},{args.location},{args.time_window},')
     evalAlertFrequency(encs)
     evalNMACs(encs)
-
-def evalSingle(enc, enc_num, args):
-    fname = 'v5_per_enc_eval.csv'
-    if args.yolov8:
-        fname = 'per_enc_eval.csv'
-    output_enc_result(f'{enc_num},{args.weather},{args.location},{args.time_window},', fname)
-    evalSingleAlertFrequency(enc, fname)
-    evalSingleNMAC(enc, fname)

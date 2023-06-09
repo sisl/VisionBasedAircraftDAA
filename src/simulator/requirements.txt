@@ -1,0 +1,14 @@
+Pillow
+numpy
+pandas
+matplotlib
+opencv-python
+pymap3d
+mss
+scipy
+
+torch
+torchvision
+pandas
+sklearn
+ultralytics

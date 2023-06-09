@@ -16,7 +16,7 @@ from perception.XPlanePerception import XPlanePerception
 from perception.PerfectPerception import PerfectPerception
 
 import argparse
-from evaluation import runEval, evalSingle
+from evaluation import runEval
 from encounter_model.straight_line_model import generate_new_encounter_set
 
 def get_next_own_state(x0_prime, y0_prime, s_own, action):
@@ -69,9 +69,6 @@ def run_simulator(encs):
     controller = VCAS()
     perceptor = XPlanePerception(args)
     enc_num = 1
-    runEval(encs,'before',args)
-    if args.clearml:
-        task.get_logger().report_table(title='simulation results',series='results',csv='./eval_results.csv')
 
     for enc in encs:
         # for choosing one encounter to run
@@ -118,17 +115,15 @@ def run_simulator(encs):
                                              s_own, action)
             
         output_encs.append(enc_prime)
-        #evalSingle(enc_prime, enc_num, args)
         perceptor.evalEnc(enc_prime, enc_num, args)
-        csv = "./per_enc_eval.csv"
         if args.clearml: 
-            task.get_logger().report_table(title='single results',series='singleresults',csv=csv)
+            task.get_logger().report_table(title='single results',series='singleresults',csv=f"./{args.fname}.csv")
         enc_num += 1
     
     del perceptor
 
     output_encs = np.array(output_encs)
-    runEval(output_encs, 'after', args)
+    runEval(output_encs)
     if args.clearml:
         task.get_logger().report_table(title='simulation results',series='results',csv='./eval_results.csv')
     del controller
@@ -170,17 +165,19 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
     parser.add_argument("-tod", "--tod", dest="time_window", default = "morning", help="morning, midday, earlyafternoon, or lateafternoon", type=str)
     parser.add_argument("-m", "--model", dest="model_path", default="../../models/baseline.pt", help="path to model", type=str)
-    #parser.add_argument("-f", "--outfile", dest="outfile", default="per_enc_eval", help="path to model", type=str)
+    parser.add_argument("-f", "--outfilename", dest="fname", default="per_enc_eval", help="Outfile name for encounter simulation results, without filetype suffix.", type=str)
     parser.add_argument("-xp", dest="xp", help="Use this flag to enable XPlane customization.", action='store_true')
     parser.add_argument("-c", dest="clearml", help="Use clearml", action='store_true')
+    parser.add_argument("-ed", "--encsdir", dest="encs_dir", default="./encounter_sets/simulation_encs", help="path to encounters for simulation", type=str)
     global args
     args = parser.parse_args()
 
-    # BULK SIMULATION VARIABLE SETUP
+    ## BULK SIMULATION VARIABLE SETUP
+    ## (will override associated command line args)
     args.craft = "Boeing 737-800"
     args.encs_dir = generate_new_encounter_set(30, 'encset', 'simulation_encs')
-    args.model_path = "../../models/baseline_worse.pt"
-    args.fname = 'per_enc_eval.csv'
+    args.model_path = "../../models/baseline.pt"
+    args.fname = 'per_enc_eval'
 
     encs = import_encounter_set(args.encs_dir)
     run_simulator(encs)

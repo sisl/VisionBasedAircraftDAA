@@ -4,7 +4,7 @@ import os
 import argparse
 
 def train():
-    '''Skeleton code for training a YOLo model'''
+    '''Skeleton code for training a YOLO model'''
     
     model = YOLO(args.model)  # build a new model from scratch
     path = os.path.join("..", "..", "datasets", args.dataset, f"{args.dataset}.yaml")

@@ -1,11 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import normalize
-from utils import output_file
-from utils import *
+from .utils import *
 import math
 import argparse
-from utils import EncounterDescription
 
 def sampler():
     '''returns random encounter information'''
@@ -37,7 +35,6 @@ def get_encounter_states(enc_des, dt=1):
     # Assumption : ownship starts at origin at "closest point of approach" time
     ownship_2d_cpa = [0.0, 0.0]
     theta_rad = np.deg2rad(enc_des.theta_cpa)
-    print(enc_des.theta_cpa)
     intruder_2d_cpa = [enc_des.hmd * np.sin(theta_rad),
                        enc_des.hmd * np.cos(theta_rad)]
     '''intruder_2d_cpa = [enc_des.hmd * -np.sin(theta_rad),
@@ -131,10 +128,10 @@ def rotate_and_shift_encs(encs):
     return new_encs
 
 
-def get_encounter_set():
+def get_encounter_set(num_encs):
     '''Calls to get_encounter_states to generate list of encounters'''
 
-    encs = [get_encounter_states(sampler()) for i in range(args.num_encs)]
+    encs = [get_encounter_states(sampler()) for i in range(num_encs)]
     return encs
 
 def plot_10_encs(encs):
@@ -147,6 +144,16 @@ def plot_10_encs(encs):
             axis[math.floor(i/cols)][i - (math.floor(i/cols))*cols])
         ax.set_aspect('equal', adjustable='datalim')
 
+def generate_new_encounter_set(num_encs, prefix, subfolder):
+    encs = get_encounter_set(num_encs=num_encs)
+    encs = rotate_and_shift_encs(encs)
+    i = 0
+    while os.path.exists(os.path.join("encounter_sets", subfolder, f'{prefix}_{i}.csv')):
+        i += 1
+    path = os.path.join("encounter_sets", subfolder, f'{prefix}_{i}.csv')
+    output_file(encs, path=path)
+    return path
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--num", dest="num_encs", default=10, help="Specify number of encounters to generate", type=int)
@@ -154,7 +161,7 @@ if __name__ == "__main__":
     global args
     args = parser.parse_args()
 
-    encs = get_encounter_set()
+    encs = get_encounter_set(args.num_encs)
     encs = rotate_and_shift_encs(encs)
     output_file(encs, args.outfile)
     print(f"{args.num_encs} encounters generated and saved to encounter_sets/{args.outfile}.csv")

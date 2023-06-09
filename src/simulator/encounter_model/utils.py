@@ -91,11 +91,15 @@ class Encounter:
                   self.intr_data[:, 2], 'b-', label="intruder")
         axis.legend(handles=[own, intr, detect])
 
-def output_file(encs, name):
+def output_file(encs, name=None, path=None):
     '''Helper function for outputting encounter set to csv file'''
     
-    csv_file = os.path.join("..", "encounter_sets", name + '.csv')
-    with open(csv_file, 'w+') as fd:
+    if path is None:
+        csv_file = os.path.join("..", "encounter_sets", name + '.csv')
+    else: 
+        csv_file = path
+    print(csv_file)
+    with open(csv_file, 'w') as fd:
         fd.write("enc_number,t,x0,y0,z0,v0,dh0,theta0,x1,y1,z1,v1,dh1,theta1,advisory\n")
     with open(csv_file, 'a') as fd:
         num = 1

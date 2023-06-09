@@ -12,6 +12,7 @@ from sklearn.metrics import precision_score, PrecisionRecallDisplay
 from PIL import Image
 import matplotlib.pyplot as plt
 from ultralytics import YOLO
+import time
 
 def output_to_file(msg, reset=False):
     '''Prints evaluation to output file'''
@@ -20,7 +21,6 @@ def output_to_file(msg, reset=False):
     if reset: permission = 'w'
     with open(f"{args.outfile_name}.txt", permission) as outfile:
         outfile.write(msg)
-
 
 def get_ious(y_pred_xyxy, y_true_xyxy):
     '''Calculates intersection over union between predicted and true states'''
@@ -31,10 +31,8 @@ def get_ious(y_pred_xyxy, y_true_xyxy):
             ious.append(None)
             continue
         iou = tv.ops.box_iou(y_pred_xyxy[i], y_true_xyxy[i])
-        # print(i, tv.ops.box_convert(y_pred_xyxy[i],'xyxy','cxcywh'), tv.ops.box_convert(y_true_xyxy[i],'xyxy','cxcywh'), iou)
         ious.append(iou)
     return ious
-
 
 def get_prec_and_recall(ious):
     '''Calculates precision and recall based on intersection over union'''
@@ -47,14 +45,46 @@ def get_prec_and_recall(ious):
         if i is None:
             fns += 1
             continue
+
         for j in range(len(i)):
             if i[j] > 0:
                 tps += 1
             else:
                 fps += 1
+
     precision = 'NA' if tps + fps == 0 else tps / (tps + fps)
     recall = 'NA' if tps + fns == 0 else tps / (tps + fns)
     output_to_file(f"Precision: {precision}, Recall: {recall}\n")
+
+def get_map(ious):
+    '''Calculates mean average precision (mAP)'''
+
+    thresholds = np.arange(0.0,0.95,step=0.05)
+    precisions = np.empty_like(thresholds)
+    recalls = np.empty_like(thresholds)
+
+    for idx, t in enumerate(thresholds):
+        tps, fps, fns = 0, 0, 0
+
+        for i in ious:
+            if i is None:
+                fns += 1
+                continue
+            for j in range(len(i)):
+                if i[j] > t:
+                    tps += 1
+                else:
+                    fps += 1
+        precisions[idx] = 0 if tps + fps == 0 else tps / (tps + fps)
+        recalls[idx] = 0 if tps + fns == 0 else tps / (tps + fns)
+
+    recalls2 = np.append(recalls, 1)
+    precisions2 = np.append(precisions, 0)
+    recalls2 = np.insert(recalls2, 0, 0)
+    precisions2 = np.insert(precisions2, 0, 0)
+    
+    AP = np.sum((recalls2[1:] - recalls2[:-1]) * precisions2[1:])
+    output_to_file(f"Average Precision: {AP}\n")
 
 
 def get_data(subdir):
@@ -74,10 +104,9 @@ def get_data(subdir):
     y_true_xyxy
         list of tensors representing bounding actual bounding boxes in xyxy format
     '''
-
     model = YOLO(args.path_to_model)
-    source_list = os.listdir(os.path.join(
-        args.path_to_datadir, "images", subdir))
+
+    source_list = os.listdir(os.path.join(args.path_to_datadir, "images", subdir))
     image_list = []
     file_list = []
     y_true_xyxy = []
@@ -85,34 +114,37 @@ def get_data(subdir):
 
     count = 0
     total_count = 0
+    extras = 0
+    n = len(source_list)
 
-
-    for im_f in source_list:
+    for idx, im_f in enumerate(source_list):
         im_path = os.path.join(args.path_to_datadir, "images", subdir, im_f)
         if os.path.isfile(im_path):
-            if im_path == os.path.join(args.path_to_datadir, "images", subdir, '.DS_Store'): continue
+            if im_path == os.path.join(args.path_to_datadir, "images", subdir, '.DS_Store'): 
+                extras += 1
+                continue
             file_list.append(int(im_f.replace('.jpg', '')))
+
             image_list.append(Image.open(im_path))
             with open(os.path.join(args.path_to_datadir, "labels", subdir, im_f.replace('.jpg', '.txt')), "r") as labelfile:
                 data_txt = labelfile.readline().split(" ")
             data = [float(d) for d in data_txt][1:]
             data = torch.FloatTensor([data])
             data = tv.ops.box_convert(data, 'cxcywh', 'xyxy')
+
             y_true_xyxy.append(data)
+
             count += 1
             total_count += 1
-        if count == 100:
-            results = model.predict(
-                source=image_list, save=args.save, save_txt=args.save)
-            print (f"Processed {total_count} images")
-            
-            for i in range(len(results)):
-                if results[i].boxes.shape[0] == 0:
-                    y_pred_xyxy.append(None)
-                else:
-                    y_pred_xyxy.append(results[i].boxes.xyxyn)
-            count = 0
-            image_list.clear()
+            results = model.predict(source=Image.open(im_path), save=args.save, save_txt=args.save)
+            if results[0].boxes.shape[0] == 0:
+                y_pred_xyxy.append(None)
+            else:
+                y_pred_xyxy.append(results[0].boxes.xyxyn)
+            print ("IMAGE ", idx)
+            if count == 100:
+                print (f"Processed {total_count} images")
+                count = 0
 
     return file_list, y_pred_xyxy, y_true_xyxy
 
@@ -133,13 +165,15 @@ def process_filter(filt, files, y_pred, y_true, subset):
         output_to_file(f'Valid ({len(filtered_files)} samples): ')
     else:
         output_to_file(f'Train ({len(filtered_files)} samples): ')
+    #output_to_tsv(f'{subset}\t{len(filtered_files)}\t')
+
 
     y_pred_temp = [y_pred[i]
                    for i in range(len(y_pred)) if i in filtered_files]
     y_true_temp = [y_true[i]
                    for i in range(len(y_true)) if i in filtered_files]
     ious = get_ious(y_pred_temp, y_true_temp)
-    get_prec_and_recall(ious)
+    get_map(ious)
 
 def process_filte2r(filt, files_val, y_pred_val, y_true_val, files_train, y_pred_train, y_true_train):
     '''Filters data and calculates evaluation metrics on that data subset'''
@@ -167,15 +201,14 @@ def process_filte2r(filt, files_val, y_pred_val, y_true_val, files_train, y_pred
 def create_report():
     '''Outputs full evaluation report of model performance in different environment situations'''
 
-    output_to_file("EVALUATION DETAILS\n", reset=True)
+    output_to_file("TEST SET EVALUATION\n", reset=True)
     output_to_file(f"Model: {args.path_to_model}\n")
     output_to_file(f"Dataset: {args.path_to_datadir}\n\n")
     output_to_file("OVERALL PERFORMANCE\n")
+
     #subdirs = ['valid', 'train'] if args.train_and_val else ['valid']
     files_val, y_pred_val, y_true_val = get_data('valid')
     if args.train_and_val: files_train, y_pred_train, y_true_train = get_data('train')
-
-    print('here')
 
     # Filters
     ranges = {'close (0-150m)': lambda r: r < 150, 'medium (150-500m)': lambda r: r >=
@@ -185,16 +218,15 @@ def create_report():
                'above (vang>0deg)': lambda a: a >= 0}
     regions = consts.REGION_OPTIONS
     hours = {'morning (0800-1000)': (8, 10), 'midday (1000-1300)': (10, 13), 'early afternoon (1300-1500)': (13, 15), 'late afternoon (1500-1700)': (15, 17)}
-    #hours = {'night (0-4)': (0, 4), 'early morning (4-8)': (4, 8), 'late morning (8-12)': (8, 12),
-             #'afternoon (12-18)': (12, 18), 'evening (18-21)': (18, 21), 'late night (20-24)': (21, 24)}
-
-    print('here2') 
+    
     # print metrics for full validation set and train if specified
     output_to_file(f"Valid ({len(y_pred_val)} samples): ")
+    #output_to_tsv(f'valid\t{len(y_pred_val)}')
     ious = get_ious(y_pred_val, y_true_val)
-    get_prec_and_recall(ious)
+    get_map(ious)
     if args.train_and_val:
         output_to_file(f"Train ({len(y_pred_train)} samples): ")
+        #output_to_tsv(f'train\t{len(y_pred_train)}')
         ious = get_ious(y_pred_train, y_true_train)
         get_prec_and_recall(ious)
 
@@ -202,7 +234,9 @@ def create_report():
         "\n---------------------------\n\nPERFORMANCE ON CLOUD COVERING\n")
     for c in range(6):
         output_to_file(f"clouds={c}\n")
+        #output_to_tsv(f'clouds\t{c}\t')
         cloud_filter = filter_data("clouds", lambda x: x == c)
+        #print("CLOUDS: ", c)
         process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(cloud_filter, files_train, y_pred_train, y_true_train, 'train')
 
@@ -212,6 +246,13 @@ def create_report():
         output_to_file(f"distance={r}\n")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        
+        for c in range(6):
+            output_to_file(f"\tclouds={c}\t")
+            cloud_filter = filter_data("clouds", lambda x: x == c)
+            cloud_filter = [idx for idx in cloud_filter if idx in filt]
+            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+            
 
     output_to_file("\nPERFORMANCE ON VERTICAL ANGLE\n")
     for a in rel_alt:
@@ -220,12 +261,24 @@ def create_report():
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
+        for c in range(6):
+            output_to_file(f"\tclouds={c}\t")
+            cloud_filter = filter_data("clouds", lambda x: x == c)
+            cloud_filter = [idx for idx in cloud_filter if idx in filt]
+            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+
     output_to_file("\nPERFORMANCE ON AIRCRAFT TYPE\n")
     for ac in crafts:
         filt = filter_data("ac", lambda x: x.strip() == ac)
         output_to_file(f"craft={ac}\n")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+
+        for c in range(6):
+            output_to_file(f"\tclouds={c}\t")
+            cloud_filter = filter_data("clouds", lambda x: x == c)
+            cloud_filter = [idx for idx in cloud_filter if idx in filt]
+            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
 
     output_to_file("\nPERFORMANCE ON REGIONS\n")
     for r in regions:
@@ -234,6 +287,12 @@ def create_report():
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
+        for c in range(6):
+            output_to_file(f"\tclouds={c}\t")
+            cloud_filter = filter_data("clouds", lambda x: x == c)
+            cloud_filter = [idx for idx in cloud_filter if idx in filt]
+            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+
     output_to_file("\nPERFORMANCE ON TIMES OF DAY\n")
     for h in hours:
         filt = filter_data("local_time_sec", lambda x: x /
@@ -241,6 +300,13 @@ def create_report():
         output_to_file(f"hours={h}\n")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
         if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+
+        for c in range(6):
+            output_to_file(f"\tclouds={c}\t")
+            cloud_filter = filter_data("clouds", lambda x: x == c)
+            cloud_filter = [idx for idx in cloud_filter if idx in filt]
+            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -255,6 +321,9 @@ if __name__ == '__main__':
                         dest="outfile_name", default="results", help="Name of output file for evaluation results, without a filetype suffix. If a file with this name already exists, it will be overwritten.")
     parser.add_argument("-s", "--save", dest="save",
                         action=argparse.BooleanOptionalAction, default=False, help="Flag for specifying that the images with overlayed bounding boxes should be saved. Images and labels will be saved within the 'runs/detect' directory in 'model'.")
+    #parser.add_argument("-y", dest="yolov8", help="Use this flag to enable XPlane customization.", action='store_true')
+
     global args
     args = parser.parse_args()
+
     create_report()

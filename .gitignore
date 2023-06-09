@@ -12,6 +12,7 @@ src/detection_scripts/datasets
 ARCHIVE
 *runs/
 *src/simulator/gifs/*
+src/simulator/encounter_sets/simulator_encs/*
 
 __pycache__/
 .vscode

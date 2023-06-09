@@ -1,93 +1,64 @@
 EVALUATION DETAILS
 Model: ../../models/baseline.pt
-Dataset: ../../datasets/sample_small
+Dataset: ../../datasets/starter_dataset
 
 OVERALL PERFORMANCE
-Valid (30 samples): Precision: 0.9375, Recall: 0.9375
-Train (30 samples): Precision: 1.0, Recall: 0.8125
+Valid (7200 samples): Average Precision: 0.8656237494632895
 
 ---------------------------
 
 PERFORMANCE ON CLOUD COVERING
 clouds=0
-Valid (5 samples): Precision: 0.7142857142857143, Recall: 0.8333333333333334
-Train (5 samples): Precision: 1.0, Recall: 0.8333333333333334
+Valid (1200 samples): Average Precision: 0.8564056113620891
 clouds=1
-Valid (5 samples): Precision: 1.0, Recall: 1.0
-Train (5 samples): Precision: 1.0, Recall: 1.0
+Valid (1200 samples): Average Precision: 0.9003972809926156
 clouds=2
-Valid (5 samples): Precision: 1.0, Recall: 1.0
-Train (5 samples): Precision: 1.0, Recall: 0.6666666666666666
+Valid (1200 samples): Average Precision: 0.8867269542079604
 clouds=3
-Valid (5 samples): Precision: 1.0, Recall: 1.0
-Train (5 samples): Precision: 1.0, Recall: 0.8
+Valid (1200 samples): Average Precision: 0.8877400084247131
 clouds=4
-Valid (5 samples): Precision: 1.0, Recall: 0.8
-Train (5 samples): Precision: 1.0, Recall: 0.8
+Valid (1200 samples): Average Precision: 0.8815466491491917
 clouds=5
-Valid (5 samples): Precision: 1.0, Recall: 1.0
-Train (5 samples): Precision: 1.0, Recall: 0.8
+Valid (1200 samples): Average Precision: 0.7830575577557384
 
 PERFORMANCE ON DISTANCE BETWEEN OWNSHIP AND INTRUDER
 distance=close (0-150m)
-Valid (6 samples): Precision: 1.0, Recall: 1.0
-Train (5 samples): Precision: 1.0, Recall: 1.0
+Valid (856 samples): Average Precision: 0.979439790097622
 distance=medium (150-500m)
-Valid (15 samples): Precision: 0.875, Recall: 0.9333333333333333
-Train (15 samples): Precision: 1.0, Recall: 1.0
+Valid (3629 samples): Average Precision: 0.9418873138947943
 distance=far (>500m)
-Valid (9 samples): Precision: 1.0, Recall: 0.9090909090909091
-Train (10 samples): Precision: 1.0, Recall: 0.45454545454545453
+Valid (2715 samples): Average Precision: 0.7135143425760941
 
 PERFORMANCE ON VERTICAL ANGLE
 vang=below (vang<0deg)
-Valid (15 samples): Precision: 1.0, Recall: 0.8823529411764706
-Train (15 samples): Precision: 1.0, Recall: 0.8
+Valid (3566 samples): Average Precision: 0.8466878807714572
 vang=above (vang>0deg)
-Valid (15 samples): Precision: 0.8823529411764706, Recall: 1.0
-Train (15 samples): Precision: 1.0, Recall: 0.8235294117647058
+Valid (3634 samples): Average Precision: 0.8837719519058026
 
 PERFORMANCE ON AIRCRAFT TYPE
 craft=Cessna Skyhawk
-Valid (30 samples): Precision: 0.9375, Recall: 0.9375
-Train (30 samples): Precision: 1.0, Recall: 0.8125
+Valid (2400 samples): Average Precision: 0.7496363114313184
 craft=Boeing 737-800
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+Valid (2400 samples): Average Precision: 0.9832607952824545
 craft=King Air C90
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+Valid (2400 samples): Average Precision: 0.8520360365061409
 
 PERFORMANCE ON REGIONS
 location=Palo Alto
-Valid (30 samples): Precision: 0.9375, Recall: 0.9375
-Train (30 samples): Precision: 1.0, Recall: 0.8125
+Valid (1800 samples): Average Precision: 0.9004509820811755
 location=Boston
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+Valid (1800 samples): Average Precision: 0.8849654768326993
 location=Osh Kosh
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+Valid (1800 samples): Average Precision: 0.8127444214932621
 location=Reno Tahoe
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+Valid (1800 samples): Average Precision: 0.8654678188081579
 
 PERFORMANCE ON TIMES OF DAY
-hours=night (0-4)
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
-hours=early morning (4-8)
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
-hours=late morning (8-12)
-Valid (12 samples): Precision: 1.0, Recall: 0.9230769230769231
-Train (15 samples): Precision: 1.0, Recall: 0.8666666666666667
-hours=afternoon (12-18)
-Valid (18 samples): Precision: 0.9, Recall: 0.9473684210526315
-Train (15 samples): Precision: 1.0, Recall: 0.7647058823529411
-hours=evening (18-21)
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
-hours=late night (20-24)
-Valid (0 samples): Precision: NA, Recall: NA
-Train (0 samples): Precision: NA, Recall: NA
+hours=morning (0800-1000)
+Valid (1545 samples): Average Precision: 0.8717092455524721
+hours=midday (1000-1300)
+Valid (2420 samples): Average Precision: 0.8663135554057864
+hours=early afternoon (1300-1500)
+Valid (1685 samples): Average Precision: 0.8775303198187787
+hours=late afternoon (1500-1700)
+Valid (1550 samples): Average Precision: 0.8455653928910618

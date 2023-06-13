@@ -8,11 +8,9 @@ import torchvision as tv
 import os
 import pandas as pd
 import numpy as np
-from sklearn.metrics import precision_score, PrecisionRecallDisplay
 from PIL import Image
 import matplotlib.pyplot as plt
 from ultralytics import YOLO
-import time
 
 def output_to_file(msg, reset=False):
     '''Prints evaluation to output file'''
@@ -54,7 +52,7 @@ def get_prec_and_recall(ious):
 
     precision = 'NA' if tps + fps == 0 else tps / (tps + fps)
     recall = 'NA' if tps + fns == 0 else tps / (tps + fns)
-    output_to_file(f"Precision: {precision}, Recall: {recall}\n")
+    output_to_file(f"{precision}\t{recall}\t")
 
 def get_map(ious):
     '''Calculates mean average precision (mAP)'''
@@ -84,7 +82,7 @@ def get_map(ious):
     precisions2 = np.insert(precisions2, 0, 0)
     
     AP = np.sum((recalls2[1:] - recalls2[:-1]) * precisions2[1:])
-    output_to_file(f"Average Precision: {AP}\n")
+    output_to_file(f"{AP}\t")
 
 
 def get_data(subdir):
@@ -162,9 +160,9 @@ def process_filter(filt, files, y_pred, y_true, subset):
 
     filtered_files = [i for i in range(len(files)) if files[i] in filt]
     if subset == 'valid': 
-        output_to_file(f'Valid ({len(filtered_files)} samples): ')
+        output_to_file(f'Valid\t{len(filtered_files)}\t')
     else:
-        output_to_file(f'Train ({len(filtered_files)} samples): ')
+        output_to_file(f'Train\t{len(filtered_files)}\t')
     #output_to_tsv(f'{subset}\t{len(filtered_files)}\t')
 
 
@@ -174,29 +172,7 @@ def process_filter(filt, files, y_pred, y_true, subset):
                    for i in range(len(y_true)) if i in filtered_files]
     ious = get_ious(y_pred_temp, y_true_temp)
     get_map(ious)
-
-def process_filte2r(filt, files_val, y_pred_val, y_true_val, files_train, y_pred_train, y_true_train):
-    '''Filters data and calculates evaluation metrics on that data subset'''
-
-    filtered_files = [i for i in range(len(files_val)) if files_val[i] in filt]
-    output_to_file(f'Valid ({len(filtered_files)} samples): ')
-    y_pred_temp = [y_pred_val[i]
-                   for i in range(len(y_pred_val)) if i in filtered_files]
-    y_true_temp = [y_true_val[i]
-                   for i in range(len(y_true_val)) if i in filtered_files]
-    ious = get_ious(y_pred_temp, y_true_temp)
     get_prec_and_recall(ious)
-
-    filtered_files = [i for i in range(
-        len(files_train)) if files_train[i] in filt]
-    output_to_file(f'Train ({len(filtered_files)} samples): ')
-    y_pred_temp = [y_pred_train[i]
-                   for i in range(len(y_pred_train)) if i in filtered_files]
-    y_true_temp = [y_true_train[i]
-                   for i in range(len(y_true_train)) if i in filtered_files]
-    ious = get_ious(y_pred_temp, y_true_temp)
-    get_prec_and_recall(ious)
-
 
 def create_report():
     '''Outputs full evaluation report of model performance in different environment situations'''
@@ -204,8 +180,10 @@ def create_report():
     output_to_file("TEST SET EVALUATION\n", reset=True)
     output_to_file(f"Model: {args.path_to_model}\n")
     output_to_file(f"Dataset: {args.path_to_datadir}\n\n")
-    output_to_file("OVERALL PERFORMANCE\n")
-
+    output_to_file(f"Filter\tSubset\tSamples\tmAP\tPrecision\tRecall\n")
+    output_to_file(f"---------------------------------------------------\n")
+    output_to_file("OVERALL\t")
+    
     #subdirs = ['valid', 'train'] if args.train_and_val else ['valid']
     files_val, y_pred_val, y_true_val = get_data('valid')
     if args.train_and_val: files_train, y_pred_train, y_true_train = get_data('train')
@@ -218,94 +196,80 @@ def create_report():
                'above (vang>0deg)': lambda a: a >= 0}
     regions = consts.REGION_OPTIONS
     hours = {'morning (0800-1000)': (8, 10), 'midday (1000-1300)': (10, 13), 'early afternoon (1300-1500)': (13, 15), 'late afternoon (1500-1700)': (15, 17)}
-    
+
     # print metrics for full validation set and train if specified
-    output_to_file(f"Valid ({len(y_pred_val)} samples): ")
-    #output_to_tsv(f'valid\t{len(y_pred_val)}')
+    output_to_file(f"Valid\t{len(y_pred_val)}\t")
     ious = get_ious(y_pred_val, y_true_val)
     get_map(ious)
+    get_prec_and_recall(ious)
+    output_to_file(f"\n")
     if args.train_and_val:
-        output_to_file(f"Train ({len(y_pred_train)} samples): ")
-        #output_to_tsv(f'train\t{len(y_pred_train)}')
+        output_to_file(f"OVERALL\tTrain\t{len(y_pred_train)}\t")
         ious = get_ious(y_pred_train, y_true_train)
         get_prec_and_recall(ious)
+        output_to_file(f"\n")
+    output_to_file(f"\n")
 
-    output_to_file(
-        "\n---------------------------\n\nPERFORMANCE ON CLOUD COVERING\n")
     for c in range(6):
-        output_to_file(f"clouds={c}\n")
-        #output_to_tsv(f'clouds\t{c}\t')
+        output_to_file(f"clouds={c}\t")
         cloud_filter = filter_data("clouds", lambda x: x == c)
-        #print("CLOUDS: ", c)
         process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(cloud_filter, files_train, y_pred_train, y_true_train, 'train')
+        if args.train_and_val: 
+            output_to_file(f"\nclouds={c}\t")
+            process_filter(cloud_filter, files_train, y_pred_train, y_true_train, 'train')
+        output_to_file(f"\n")
 
-    output_to_file("\nPERFORMANCE ON DISTANCE BETWEEN OWNSHIP AND INTRUDER\n")
+    output_to_file(f"\n")
     for r in ranges:
         filt = filter_data("z", ranges[r])
-        output_to_file(f"distance={r}\n")
+        output_to_file(f"distance={r}\t")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
-        
-        for c in range(6):
-            output_to_file(f"\tclouds={c}\t")
-            cloud_filter = filter_data("clouds", lambda x: x == c)
-            cloud_filter = [idx for idx in cloud_filter if idx in filt]
-            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+        if args.train_and_val: 
+            output_to_file(f"\ndistance={r}\t")
+            process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        output_to_file(f"\n")
             
-
-    output_to_file("\nPERFORMANCE ON VERTICAL ANGLE\n")
+    output_to_file(f"\n")
     for a in rel_alt:
         filt = filter_data("vang", rel_alt[a])
-        output_to_file(f"vang={a}\n")
+        output_to_file(f"vang={a}\t")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        if args.train_and_val:
+            output_to_file(f"\nvang={a}\t")
+            process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        output_to_file(f"\n")
 
-        for c in range(6):
-            output_to_file(f"\tclouds={c}\t")
-            cloud_filter = filter_data("clouds", lambda x: x == c)
-            cloud_filter = [idx for idx in cloud_filter if idx in filt]
-            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
-
-    output_to_file("\nPERFORMANCE ON AIRCRAFT TYPE\n")
+    output_to_file(f"\n")
     for ac in crafts:
         filt = filter_data("ac", lambda x: x.strip() == ac)
-        output_to_file(f"craft={ac}\n")
+        output_to_file(f"aircraft={ac}\t")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        if args.train_and_val: 
+            output_to_file(f"\naircraft={ac}\t")
+            process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        output_to_file(f"\n")
 
-        for c in range(6):
-            output_to_file(f"\tclouds={c}\t")
-            cloud_filter = filter_data("clouds", lambda x: x == c)
-            cloud_filter = [idx for idx in cloud_filter if idx in filt]
-            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
-
-    output_to_file("\nPERFORMANCE ON REGIONS\n")
+    output_to_file(f"\n")
     for r in regions:
         filt = filter_data("loc", lambda x: x.strip() == r)
-        output_to_file(f"location={r}\n")
+        output_to_file(f"location={r}\t")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        if args.train_and_val: 
+            output_to_file(f"\nlocation={r}\t")
+            process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        output_to_file(f"\n")
 
-        for c in range(6):
-            output_to_file(f"\tclouds={c}\t")
-            cloud_filter = filter_data("clouds", lambda x: x == c)
-            cloud_filter = [idx for idx in cloud_filter if idx in filt]
-            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
-
-    output_to_file("\nPERFORMANCE ON TIMES OF DAY\n")
+    output_to_file(f"\n")
     for h in hours:
         filt = filter_data("local_time_sec", lambda x: x /
                            3600 >= hours[h][0] and x / 3600 < hours[h][1])
-        output_to_file(f"hours={h}\n")
+        output_to_file(f"hours={h}\t")
         process_filter(filt, files_val, y_pred_val, y_true_val, 'valid')
-        if args.train_and_val: process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
+        if args.train_and_val: 
+            output_to_file(f"\nhours={h}\t")
+            process_filter(filt, files_train, y_pred_train, y_true_train, 'train')
 
-        for c in range(6):
-            output_to_file(f"\tclouds={c}\t")
-            cloud_filter = filter_data("clouds", lambda x: x == c)
-            cloud_filter = [idx for idx in cloud_filter if idx in filt]
-            process_filter(cloud_filter, files_val, y_pred_val, y_true_val, 'valid')
+        output_to_file(f"\n")
     plt.show()
 
 
@@ -321,7 +285,6 @@ if __name__ == '__main__':
                         dest="outfile_name", default="results", help="Name of output file for evaluation results, without a filetype suffix. If a file with this name already exists, it will be overwritten.")
     parser.add_argument("-s", "--save", dest="save",
                         action=argparse.BooleanOptionalAction, default=False, help="Flag for specifying that the images with overlayed bounding boxes should be saved. Images and labels will be saved within the 'runs/detect' directory in 'model'.")
-    #parser.add_argument("-y", dest="yolov8", help="Use this flag to enable XPlane customization.", action='store_true')
 
     global args
     args = parser.parse_args()

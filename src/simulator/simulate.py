@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 import sys
-from clearml import Task
 
 # import controllers
 from controllers.VCAS import VCAS
@@ -16,7 +15,7 @@ from perception.XPlanePerception import XPlanePerception
 from perception.PerfectPerception import PerfectPerception
 
 import argparse
-from evaluation import runEval, evalSingle
+from evaluation import runEval
 from encounter_model.straight_line_model import generate_new_encounter_set
 
 def get_next_own_state(x0_prime, y0_prime, s_own, action):
@@ -61,17 +60,11 @@ def get_next_own_state(x0_prime, y0_prime, s_own, action):
 
 def run_simulator(encs):
     '''Runs simulation'''
-    if args.clearml:
-        task_name = "MAC run simulation with single eval"
-        task = Task.init(project_name="simulation", task_name=task_name, continue_last_task=True)
-
+    
     output_encs = []
     controller = VCAS()
     perceptor = XPlanePerception(args)
     enc_num = 1
-    runEval(encs,'before',args)
-    if args.clearml:
-        task.get_logger().report_table(title='simulation results',series='results',csv='./eval_results.csv')
 
     for enc in encs:
         # for choosing one encounter to run
@@ -118,36 +111,22 @@ def run_simulator(encs):
                                              s_own, action)
             
         output_encs.append(enc_prime)
-        #evalSingle(enc_prime, enc_num, args)
         perceptor.evalEnc(enc_prime, enc_num, args)
-        csv = "./per_enc_eval.csv"
-        if args.clearml: 
-            task.get_logger().report_table(title='single results',series='singleresults',csv=csv)
         enc_num += 1
-    
-    del perceptor
 
-    output_encs = np.array(output_encs)
-    runEval(output_encs, 'after', args)
-    if args.clearml:
-        task.get_logger().report_table(title='simulation results',series='results',csv='./eval_results.csv')
-    del controller
     # plot graphs
-    return
     if args.enc_idx is not None:
-        perceptor.make_gif('encounter' + str(args.enc_idx) + '.gif')
+        #perceptor.make_gif('encounter' + str(args.enc_idx) + '.gif')
         output_encs[0].create_tz_plot(plt)
         plt.xlabel("Time (s)")
         plt.ylabel("Altitude relative to origin (m)")
         plt.show()
-    else: 
-        cols = 2
-        total = 10
-        figure, axis = plt.subplots(5, cols)
-        for i in range(total):
-            output_encs[i].create_tz_plot(
-                axis[math.floor(i/cols)][i - (math.floor(i/cols))*cols])
-        plt.show()
+    
+    del perceptor
+
+    output_encs = np.array(output_encs)
+    runEval(output_encs)
+    del controller
 
 
 def import_encounter_set(dir):
@@ -164,24 +143,29 @@ def import_encounter_set(dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-e", "--enc_idx", dest="enc_idx", default=None, type=int)
-    parser.add_argument("-w", "--weather", dest="weather", default=0, type=int)
-    parser.add_argument("-t", "--time", dest="time", default=None, help="Local time at which encounters should start (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
-    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Airport Location (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
-    parser.add_argument("-tod", "--tod", dest="time_window", default = "morning", help="morning, midday, earlyafternoon, or lateafternoon", type=str)
-    parser.add_argument("-m", "--model", dest="model_path", default="../../models/baseline.pt", help="path to model", type=str)
-    #parser.add_argument("-f", "--outfile", dest="outfile", default="per_enc_eval", help="path to model", type=str)
-    parser.add_argument("-xp", dest="xp", help="Use this flag to enable XPlane customization.", action='store_true')
-    parser.add_argument("-c", dest="clearml", help="Use clearml", action='store_true')
+    parser.add_argument("-e", "--enc_idx", dest="enc_idx", help="Specify the index of one encounter to output a vertical profile plot of the encounter.", default=None, type=int)
+    parser.add_argument("-w", "--weather", dest="weather", help="Set the weather for simulation (Options: 0, 1, 2, 3, 4, 5)", default=0, type=int)
+    parser.add_argument("-t", "--time", dest="time", default=None, help="Set the local time at which encounters should start (e.g. 8.0 = 8AM, 17.0 = 5PM)", type=float)
+    parser.add_argument("-l", "--location", dest="location", default = "Palo Alto", help="Set the geographic region for simulation (Options: Palo Alto, Osh Kosh, Boston, and Reno Tahoe)", type=str)
+    parser.add_argument("-tod", "--tod", dest="time_window", default = "morning", help="Set the desired time of day for simulation (Options: morning, midday, earlyafternoon, or lateafternoon)", type=str)
+    parser.add_argument("-ac", "--aircraft", dest="craft", default = "Cessna Skyhawk", help="Use this argument to record the aircraft for which simulation is being run. This will save the aircraft name to the results file, but the aircraft type itself MUST BE SET MANUALLY IN X-PLANE", type=str)
+    parser.add_argument("-m", "--model", dest="model_path", default="../../models/baseline.pt", help="Path to model that will be used to detect aircraft.", type=str)
+    parser.add_argument("-f", "--outfilename", dest="fname", default="per_enc_eval", help="Outfile name for encounter simulation results, without filetype suffix.", type=str)
+    parser.add_argument("-xp", dest="xp", help="Use this flag to enable X-Plane customization.", action='store_true')
+    parser.add_argument("-ed", "--encsdir", dest="encs_dir", default=None, help="Path to pre-generated encounters for use in simulation. If argument is not provided, 30 new encounters will be generated and stored in ./encounter_sets/simulation_encs.", type=str)
+    parser.add_argument("-b", dest="bulk", help="Use this flag to indicate that a shell script is being run, so the manually-set variables below will be toggled on to override some command line arguments.", action='store_true')
     global args
     args = parser.parse_args()
 
-    # BULK SIMULATION VARIABLE SETUP
-    args.craft = "Boeing 737-800"
-    args.encs_dir = generate_new_encounter_set(30, 'encset', 'simulation_encs')
-    args.model_path = "../../models/baseline_worse.pt"
-    args.fname = 'per_enc_eval.csv'
+    ## BULK SIMULATION VARIABLE SETUP
+    if args.bulk:
+        ## (will override associated command line args)
+        args.craft = "Boeing 737-800"
+        args.model_path = "../../models/baseline.pt"
+        args.fname = 'per_enc_eval'
+
+    if args.encs_dir is None:
+        args.encs_dir = generate_new_encounter_set(30, 'encset', 'simulation_encs')
 
     encs = import_encounter_set(args.encs_dir)
     run_simulator(encs)
-

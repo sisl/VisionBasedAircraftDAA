@@ -5,4 +5,4 @@ Directory containing controller classes which instruct the ownship how to procee
 
 ## Contents
 * **[BasicController.py](./BasicController.py):** Directly uses 3D coordinates of the intruder and ownship to determine the advisory required. An advisory is issued if the intruder is within 600 vertical feet and 2.1 nautical miles. 
-* **[VCAS.py](./VCAS.py):** Returns appropriate advisory based on `vcas_values.h5`, which contains Q-values for each state of the encounter as determined by the previous advisory, tau, relative altitude between aircrafts, and vertical velocity.
+* **[VCAS.py](./VCAS.py):** Returns appropriate advisory based on `vcas_values.h5`, which contains Q-values for each state of the encounter as determined by the previous advisory, tau, relative altitude between aircraft, and vertical velocity.

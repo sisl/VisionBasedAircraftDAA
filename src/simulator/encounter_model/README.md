@@ -4,7 +4,7 @@
 This folder contains files for generating encounter sets for the aircraft simulator. Generated encounter sets are stored in [encounter_sets](../encounter_sets/).
 
 ## Contents
-* **[straight_line_model.py](./straight_line_model.py):** Contains functionality for generating basic encounters in which both aircrafts travel in straight lines with a fixed vertical distance and fixed velocities. 
+* **[straight_line_model.py](./straight_line_model.py):** Contains functionality for generating basic encounters in which both aircraft travel in straight lines with a fixed vertical distance and fixed velocities. 
 * **[utils.py](./utils.py):** Contains helper functions for encounter model generation, including an `EncounterDescription` class for storing encounter set metadata, an `Encounter` class for storing information about individual encounters, and a helper function for outputting the encounter set to a csv file. 
 
 ## Instructions

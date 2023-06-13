@@ -60,7 +60,7 @@ def get_next_own_state(x0_prime, y0_prime, s_own, action):
 
 def run_simulator(encs):
     '''Runs simulation'''
-    
+
     output_encs = []
     controller = VCAS()
     perceptor = XPlanePerception(args)
@@ -85,7 +85,7 @@ def run_simulator(encs):
             s_own = s_own_prime if diverged else enc.get_ownship_state(t)
             a_prev = enc_prime.get_a_prev(t)
             s_intr_hat = perceptor.perceiveIntruderState(
-                s_own, enc.get_intruder_state(t), args.enc_idx)
+                s_own, enc.get_intruder_state(t))
             
             if s_intr_hat is None:
                 # intruder not detected by perception system

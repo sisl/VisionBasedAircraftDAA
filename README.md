@@ -10,8 +10,8 @@ This repository contains datasets, models, and simulators for the AVOIDDS benchm
 ## Primary Features
 * [Dataset Generation](./src/data_generation/): generate large datasets for training and evaluating object detection model
 * [Model Training](./src/model/): train custom detection models
-* [Test Set Evaluation](./src/model/): evaluation of models on a test set
-* [Downstream Task Evaluation](./src/simulator/): evaluation of models on simulated aircraft encounters
+* [Test Set Evaluation](./src/model/): evaluate models on a test set
+* [Downstream Task Evaluation](./src/simulator/): evaluate models on simulated aircraft encounters
 
 ## Quick Links
 * **[src](./src/):** Contains the code for the main functionality of the repository. 

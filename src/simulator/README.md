@@ -11,9 +11,10 @@ This folder contains files for building aircraft encounter sets and running enco
 ## Other Contents
 * **[encounter_sets](encounter_sets/):** Contains encounter files outputted by the encounter model to be used by the simulator. 
 * **[gifs](gifs/):** Contains any gifs of the encounters created by the simulator. See instructions below on how to invoke this functionality. 
-* **simulate.py:** Contains functionality for running the encounter simulations. 
-* **constants.py:** Contains necessary constants for the simulator. 
-* **evaluation.py:** Contains evaluation functions for the simulator. 
+* **[simulate.py](./simulate.py):** Contains functionality for running the encounter simulations. 
+* **[simulate.sh](./simulate.sh):** Shell script file that contains commands to simulate encounters with the 96 combinations of the 6 cloud types, 4 locations, and 4 times of day.
+* **[constants.py](./constants.py):** Contains necessary constants for the simulator. 
+* **[evaluation.py](./evaluation.py):** Contains evaluation functions for the simulator. 
 
 ## Instructions
 ### Running simulation

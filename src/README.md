@@ -8,4 +8,4 @@ This is the main code folder for generating datasets, building models, and simul
 * **[notebooks](notebooks/):** Contains jupyter notebooks useful for verifying and visualizing the functionality of the repository
 * **[model](model/):** Contains files relevant to training and evaluating a new model. More information can be found in the subfolder README.
 * **[simulator](simulator/):** Contains files relevant to simulating aircraft encounters. More information can be found in the subfolder README.
-* **xpc3.py:** Helper functions for using [XPlaneConnect](https://github.com/nasa/XPlaneConnect) to programmatically adjust the specifications for the aircraft and environment on X-Plane
+* **[xpc3.py](./xpc3.py):** Helper functions for using [XPlaneConnect](https://github.com/nasa/XPlaneConnect) to programmatically adjust the specifications for the aircraft and environment on X-Plane

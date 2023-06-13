@@ -133,7 +133,7 @@ class XPlanePerception:
 
         return final_x, screen_h - final_y
 
-    def perceiveIntruderState(self, s_own, s_int, enc_idx):
+    def perceiveIntruderState(self, s_own, s_int):
         '''Positions aircraft in X-Plane and then takes a screenshot and passes it through the model to detect intruder'''
 
         # ENCOUNTER STATE [x, y, z, v, dh, theta]

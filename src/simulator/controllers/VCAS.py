@@ -81,7 +81,7 @@ class VCAS:
             plt.show()
 
     def getStateForPolicy(self, s_own, s_int, a_prev):
-        '''Calculates policy state based on 3D coordinates and velocities of the aircrafts'''
+        '''Calculates policy state based on 3D coordinates and velocities of the aircraft'''
         HNMAC = 100
         ft_per_m = 3.28
         [x0, y0, z0, v0, dh0] = s_own[0:5] * ft_per_m

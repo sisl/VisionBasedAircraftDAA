@@ -17,7 +17,7 @@ import time
 
 
 def set_position(client, aircraft, loc):
-    """Sets position of aircraft in XPlane
+    """Sets position of aircraft in X-Plane
 
     Parameters
     ----------
@@ -75,7 +75,7 @@ class XPlanePerception:
         self.latest_exact_time = local_time
 
     def setup_xplane(self):
-        '''Establishes connection with XPlane to prepare for detection'''
+        '''Establishes connection with X-Plane to prepare for detection'''
 
         client = XPlaneConnect()
         client.socket.settimeout(None)
@@ -134,7 +134,7 @@ class XPlanePerception:
         return final_x, screen_h - final_y
 
     def perceiveIntruderState(self, s_own, s_int, enc_idx):
-        '''Positions aircrafts in XPlane and then takes a screenshot and passes it through the model to detect intruder'''
+        '''Positions aircraft in X-Plane and then takes a screenshot and passes it through the model to detect intruder'''
 
         # ENCOUNTER STATE [x, y, z, v, dh, theta]
         [x0, y0, z0, _, _, theta0] = s_own[0:6]
@@ -163,8 +163,8 @@ class XPlanePerception:
                     self.image_count += 1
                     return s_int
 
-        if enc_idx is not None:
-            cv2.imwrite(f"{self.image_dir}{self.image_count}.jpg", ss)
+        '''if enc_idx is not None:
+            cv2.imwrite(f"{self.image_dir}{self.image_count}.jpg", ss)'''
 
         del predictions
         self.image_count += 1

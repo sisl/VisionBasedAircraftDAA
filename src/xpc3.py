@@ -31,7 +31,7 @@ class XPlaneConnect(object):
         if timeout < 0:
             raise ValueError("timeout must be non-negative.")
 
-        # Setup XPlane IP and port
+        # Setup X-Plane IP and port
         self.xpDst = (xpIP, xpPort)
 
         # Create and bind socket

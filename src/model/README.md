@@ -6,8 +6,8 @@ Contains functionality for training and evaluating aircraft detection models
 * [eval.py](./eval.py): Code for evaluating an aircraft detection model using precision and recall. Outputs the `results.txt` file with a summary of results. See instructions below on how to run evaluation. 
 * [results.txt](./results.txt): Results from model evaluation across different environmental factors, outputted by `eval.py`. (This is the default filename, but others can be specified).
 * [requirements.txt](./requirements.txt): Specifies package requirements for training and evaluating a model. Run `pip3 install -r requirements.txt` from this directory to install them. 
-* [runs](./runs): Git-ignored directory where prediction files are saved via the YOLO API. These files can be generating using the `-s` flag with the evaluation script. 
-* [basic_predict.py](./basic_predict.py): Code for running model prediction tests. Image and model location can be specified and results are saved to [runs](./runs).
+* [runs](./runs): Git-ignored directory where prediction data is saved via the YOLO API. These files can be generating using the `-s` flag with the evaluation script. 
+* [basic_predict.py](./basic_predict.py): Starter code for running model prediction tests (e.g. predictions on a specific folder of images). Image and model location can be specified and results are saved to [runs](./runs).
 
 ## Instructions
 ### Training a YOLO Model

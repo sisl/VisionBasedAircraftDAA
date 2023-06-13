@@ -10,7 +10,7 @@
 ## Instructions
 Instructions for using the data_generation portion of the repository. This will walk you through how to generate images rapidly of different scenes in XPlane using XPlaneConnect for vision-based aircraft detect-and-avoid algorithm testing. All images and labels (in YOLO format) are saved to the [datasets folder](../../datasets/).
 
-### Setup XPlane
+### Setup X-Plane
 1. Follow the setup instructions in the [root README](../../README.md).
 2. Open XPlane in full screen mode. If using Windows OS, follow troubleshooting tip #1 below. 
 3. From the main menu, select "New Flight"

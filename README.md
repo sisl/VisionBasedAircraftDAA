@@ -1,7 +1,7 @@
 # VisionBasedAircraftDAA
 
 ## Overview
-This repository contains datasets, models, and simulators for the AVOIDDS benchmark which centers around the vision-based aircraft detect-and-avoid (DAA) problem. The full AVOIDDS dataset of 72,000 samples available here: [purl.stanford.edu/hj293cv5980](https://purl.stanford.edu/hj293cv5980).
+This repository contains datasets, models, and simulators for the AVOIDDS (Aircraft Vision-based Intruder Detection Dataset and Simulator) benchmark which centers around the vision-based aircraft detect-and-avoid (DAA) problem. The full AVOIDDS dataset of 72,000 samples available here: [purl.stanford.edu/hj293cv5980](https://purl.stanford.edu/hj293cv5980).
 
 ### Example of Aircraft Detect-and-Avoid in Action!
 ![](./example.gif)

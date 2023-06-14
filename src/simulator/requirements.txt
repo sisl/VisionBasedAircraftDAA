@@ -6,6 +6,9 @@ opencv-python
 pymap3d
 mss
 scipy
+h5py
+shutil
+cv2
 
 torch
 torchvision
